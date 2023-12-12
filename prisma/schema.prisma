@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql" 
+  url      = env("DATABASE_URL") 
+}
+
+enum Tallas {
+  XS
+  S
+  M
+  L
+  XL
+  XXL
+}
+
+enum Colores {
+  Negro
+  Blanco
+  Rojo
+  Azul
+  Verde
+  Marron
+}
+
+model Usuario {
+  id Int @id @default(autoincrement())
+  rol Int
+  nombre String
+  apellidos String
+  telefono String
+  email String @unique
+  contrasenya String
+  direccion String
+  pedidos Pedido[] @relation("pedidosPorUsuario")
+  
+}
+
+model Pedido {
+  Id Int @id @default(autoincrement())
+  usuarioId Int
+  usuario Usuario @relation("pedidosPorUsuario", fields: [usuarioId], references: [id])
+  fecha DateTime
+}
+
+
