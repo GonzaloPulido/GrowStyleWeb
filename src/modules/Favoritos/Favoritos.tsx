@@ -108,7 +108,7 @@ const SPopUpContainer = styled.div`
     border-bottom-left-radius: 0.375rem;
     overflow-y: auto;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: start;
     align-items: flex-start;
     display: inline-flex;
     z-index: 2000;
