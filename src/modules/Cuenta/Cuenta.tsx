@@ -19,6 +19,10 @@ const Cuenta = () => {
             </SBlock2>
             <SDataInput placeholder='Password' className='last'/>
         </SDataInputs>
+        <SButtons>
+            <SUpdateButton>Actualizar Cuenta</SUpdateButton>
+            <SDeleteButton>Eliminar Cuenta</SDeleteButton>
+        </SButtons>
     </SData>
   )
 }
@@ -65,4 +69,26 @@ const SBlock2 = styled.div`
     gap: 15px;
 `
 
+const SButtons = styled.div`
+    display: flex;
+    gap: 60px;
+    justify-content: center;
+    margin-top: 20px;
+`
+
+const SUpdateButton = styled.button`
+    width: 350px;
+    border: 2px solid  ${COLORS.black};
+    padding: 5px;
+    font-size: 25px;
+    cursor: pointer;
+`
+
+const SDeleteButton = styled.button`
+    width: 350px;
+    border: 2px solid  ${COLORS.black};
+    padding: 5px;
+    font-size: 25px;
+    cursor: pointer;
+`
 export default Cuenta

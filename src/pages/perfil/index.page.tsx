@@ -8,10 +8,17 @@ import fav from '../../../public/icons/heartIcon.svg'
 import logout from '../../../public/icons/logout.svg'
 import Image from 'next/image'
 import Cuenta from '../../modules/Cuenta/Cuenta'
+import Direccion from '../../modules/Direccion/Direccion'
+import Pedidos from '../../components/Pedidos/Pedidos'
+import Favoritos from '../../components/Favoritos/Favoritos'
+import router from 'next/router'
 
 const Perfil = () => {
   const [selected, setSelected] = useState(1)
   const nombre = "Gonzalo"
+
+  
+
   return (
     <SGeneralContainer>
     <SOptionsContainer>
@@ -36,7 +43,7 @@ const Perfil = () => {
             <SOptionIcon src={fav} alt=''/>
             <SOptionTitle className={selected == 4 ? "selected" : ""}>Favoritos</SOptionTitle>
           </SOption>
-          <SOption onClick={() => setSelected(5)}>
+          <SOption onClick={() => router.push("/")}>
             <SOptionIcon src={logout} alt=''/>
             <SOptionTitle className={selected == 5 ? "selected" : ""}>Cerrar Sesión</SOptionTitle>
           </SOption>
@@ -44,10 +51,9 @@ const Perfil = () => {
       </SOptionsDiv>
     </SOptionsContainer>
     {selected === 1 && <Cuenta/>}
-    {selected === 2 && <div>2</div>}
-    {selected === 3 && <div>3</div>}
-    {selected === 4 && <div>4</div>}
-    {selected === 5 && <div>5</div>}
+    {selected === 2 && <Direccion/>}
+    {selected === 3 && <Pedidos/>}
+    {selected === 4 && <Favoritos/>}
     </SGeneralContainer>
   )
 }
