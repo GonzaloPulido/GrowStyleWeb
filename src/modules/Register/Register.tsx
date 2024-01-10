@@ -15,13 +15,13 @@ const DynamicPortal = dynamic(
     {ssr: false}
 )
 
-interface LoginProps {
+interface RegisterProps {
     isActive: boolean,
     onClose: () => void,
     onCloseLogin: () => void
 }
 
-const Login: React.FC<LoginProps> = ({onClose, isActive, onCloseLogin}) => {
+const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
     const [visiblePassword, setvisiblePassword] = useState(false)
     const {register, formState: {errors}, handleSubmit, getValues} = useForm()
 

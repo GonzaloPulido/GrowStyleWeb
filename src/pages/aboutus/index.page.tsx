@@ -1,11 +1,68 @@
 import React, { ReactElement } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout'
+import styled from 'styled-components'
+import Image from 'next/image'
+import { COLORS } from '../../share/colors'
+import {Nunito } from "next/font/google"
+import router from 'next/router'
+export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
+import nosotros from '../../../public/icons/empresa.jpeg'
+import logo from '../../../public/icons/bigLogoGrowStyle.png'
 
 const AboutUs = () => {
   return (
-    <div>AboutUs</div>
+    <SMain>
+      <STitle>¿Quienes Somos?</STitle>
+      <SAboutUsImg src={nosotros.src} alt='' width="0" height="0"/>
+      <SDescription>"En GrowStyle, somos más que una tienda de camisetas y sudaderas. Nosotros representamos una 
+        comunidad que abraza el crecimiento personal y la expresión auténtica a través del estilo. 
+        Nuestra pasión radica en brindarte prendas de vestir de alta calidad que te permitan mostrar quién eres 
+        y lo que valoras.
+      </SDescription>
+
+      <SDescription>
+        Nos enorgullece crear prendas que no solo te hagan lucir bien, sino que también te hagan 
+        sentir empoderado/a. Nuestro compromiso con la calidad se refleja en cada detalle, desde la elección de 
+        los materiales hasta los acabados finales. Queremos que te sientas cómodo/a y seguro/a usando nuestras prendas, 
+        sabiendo que estás vistiendo un estilo que representa tu crecimiento personal y tu individualidad."
+      </SDescription>
+    </SMain>
   )
 }
+
+
+const SMain = styled.main`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center; 
+  padding: 1.875rem;
+  background-color: ${COLORS.green};
+  height: 65rem;
+`
+
+const STitle = styled.h1`
+  font-size: 60px;
+`
+
+const SAboutUsImg = styled(Image)`
+  width: 50.25rem;
+  height: 33.75rem; 
+  border-radius: 0.375rem;
+`
+
+const SLogoImage = styled(Image)`
+  width: 28.875rem;
+  height: 8.75rem;
+  cursor: pointer;
+`
+const SDescription = styled.p`
+  width: 50rem;
+  text-align: center;
+  font-family: ${nunito.style.fontFamily};
+  font-size: 1.25rem; 
+`
 AboutUs.getLayout = (page: ReactElement) => {
     return <AppLayout title={''}>{page}</AppLayout>
   }

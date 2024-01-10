@@ -101,8 +101,9 @@ const SNombrePedido = styled.h2`
 const SDatosPedido = styled.div`
     display: flex;
     width: 300px;
-    gap: 50px;
-    margin-left: 40px;
+    
+    justify-content: space-between;
+    
 `
 
 const SColor = styled.div`

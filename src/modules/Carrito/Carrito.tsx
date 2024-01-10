@@ -316,6 +316,7 @@ const SBuyButton = styled.div`
     border: 1px ${COLORS.black} solid;
     display: flex;
     cursor: pointer;
+    color: ${COLORS.white};
 `
 
 const SButtonTitle = styled.h2`

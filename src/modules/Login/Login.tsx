@@ -34,7 +34,6 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
                 //toastId: "", 
                 autoClose: 3000,
                 theme: "colored",
-
             })
         }
 

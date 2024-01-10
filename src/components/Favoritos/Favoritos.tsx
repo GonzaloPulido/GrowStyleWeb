@@ -39,7 +39,6 @@ const Favoritos = () => {
                         <SNombreFav>{nombre}</SNombreFav>
                         <SDatoSFav>
                             <SColor id={color}/>
-                            <STalla>{talla}</STalla>
                             <SPrecio>{precioFinal}€</SPrecio>
                         </SDatoSFav>
                     </SInfoContainer>
@@ -95,9 +94,10 @@ const SNombreFav = styled.h2`
 
 const SDatoSFav = styled.div`
     display: flex;
-    width: 300px;
-    gap: 70px;
-    margin-left: 50px;
+    width: 250px;
+    //gap: 70px;
+    //margin-left: 50px;
+    justify-content: space-between;
 `
 
 const SColor = styled.div`
