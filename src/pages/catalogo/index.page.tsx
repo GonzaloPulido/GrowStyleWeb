@@ -5,9 +5,23 @@ import { COLORS } from '../../share/colors'
 import Image from 'next/image'
 import filter from '../../../public/icons/filterIcon.svg'
 import Filtros from '../../modules/Filtros/Filtros'
+import ProductoListado from '../../modules/ProductoListado/ProductoListado'
 
 const Catalogo = () => {
   const [filters, setFilters] = useState(false)
+
+  const [prodFavoritos, setProdFavoritos] = useState([
+    {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+  ])
+
+
   return (
     <SContainer>
       {(filters) && (<Filtros isActive={filters} onClose={() => setFilters(false)}/>)}
@@ -15,7 +29,15 @@ const Catalogo = () => {
         <SFilterImage src={filter} alt=''/>
         <SFilterTitle >Filtros</SFilterTitle>
       </SBlock1>
-      <SBlock2></SBlock2>
+      <SBlock2>
+      {prodFavoritos.map((prod)=>{
+                                const { id, nombre, color, precio, descuento, imagen } = prod;
+                                console.log(imagen);
+                                return(
+                                    <ProductoListado imagen={imagen} nombre={nombre} precioDescuento={descuento} precio={precio} isFav={false}></ProductoListado>
+                                )
+                            })}
+      </SBlock2>
     </SContainer>
   )
 }
@@ -28,7 +50,7 @@ const SContainer = styled.main`
   justify-content: center;
   padding: 1.875rem;
   background-color: ${COLORS.green};
-  height: 50rem;
+  min-height: 50rem;
 `
 
 const SBlock1 = styled.div`
@@ -49,7 +71,11 @@ const SFilterTitle = styled.h2`
 `
 
 const SBlock2 = styled.div`
-  
+  display: flex;
+  gap: 50px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 50px;
 `
 
 Catalogo.getLayout = (page: ReactElement) => {
