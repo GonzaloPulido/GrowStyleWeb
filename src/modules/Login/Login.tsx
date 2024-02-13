@@ -41,7 +41,6 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
     
 
     const onSubmit = (data: FieldValues) => {
-        console.log(data);
         onClose()
         router.push("/perfil")
     }

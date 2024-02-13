@@ -32,7 +32,6 @@ const Favoritos: React.FC<FavProps> = ({onClose, isActive}) => {
 
 
     const eliminarElemento = (id: number) => {
-        console.log("Eliminando...");
         const nuevosFavoritos = [...prodFavoritos];
         const indice = prodFavoritos.findIndex((prod) => prod.id === id);
         
@@ -40,9 +39,7 @@ const Favoritos: React.FC<FavProps> = ({onClose, isActive}) => {
             const nuevosFavoritosActualizado = [...nuevosFavoritos];
             nuevosFavoritosActualizado.splice(indice, 1);
             setProdFavoritos(nuevosFavoritosActualizado);
-            console.log("Elemento eliminado:", id);
         } else {
-            console.error("Elemento no encontrado");
         }
     }
 
@@ -60,7 +57,6 @@ const Favoritos: React.FC<FavProps> = ({onClose, isActive}) => {
                             <SContainerFavorites>
                             {prodFavoritos.map((prod)=>{
                                 const { id, nombre, color, precio, descuento, imagen } = prod;
-                                console.log(imagen);
                                 return(
                                     <SFavContainer>
                                         <SFavImage src={imagen} alt="" width={0} height={0}/>

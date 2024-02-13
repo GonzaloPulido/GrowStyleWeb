@@ -3,20 +3,28 @@ import React from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
 import fav from '../../../public/icons/heartIcon.svg'
+import { useRouter } from 'next/router'
 
 interface ProductoListadoProps {
+    id: number;
     imagen: string,
     nombre: string,
     precioDescuento: number,
     precio: number,
     isFav?: boolean,
+    
 
 }
 
-const ProductoListado: React.FC<ProductoListadoProps> = ({imagen,nombre,precioDescuento,precio,isFav}) => {
+const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,precioDescuento,precio,isFav}) => {
+    const router = useRouter();
+
+    const handleImageClick = () => {
+        router.push(`/producto/${id}`);
+    };
   return (
     <SProductoContainer>
-        <SImagen src={imagen} alt='' width={0} height={0}/>
+        <SImagen src={imagen} alt='' width={0} height={0} onClick={handleImageClick}/>
         <SInformacion>
             <SLeftContainer>
                 <SName>{nombre}</SName>
@@ -45,7 +53,8 @@ const SImagen = styled(Image)`
     width: 100%;
     height: 480px;
     border: 3px solid ${COLORS.black};
-    //object-fit: cover;
+    object-fit: cover;
+    cursor: pointer;
 `
 const SInformacion = styled.div`
     border: 2px solid ${COLORS.black};

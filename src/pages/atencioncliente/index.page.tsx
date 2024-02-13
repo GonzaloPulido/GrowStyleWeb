@@ -38,7 +38,6 @@ const AtencionCliente = () => {
 
     setTimeout(redirect, 3000);
 
-    console.log(data);
   }
 
 

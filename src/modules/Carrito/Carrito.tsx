@@ -38,7 +38,6 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
     ])
 
     const eliminarElemento = (id: number) => {
-        console.log("Eliminando...");
         const nuevoCarrito = [...prodCarrito];
         const indice = prodCarrito.findIndex((prod) => prod.id === id);
         
@@ -46,9 +45,7 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
             const nuevoCarritoActualizado = [...nuevoCarrito];
             nuevoCarritoActualizado.splice(indice, 1);
             setProdCarrito(nuevoCarritoActualizado);
-            console.log("Elemento eliminado:", id);
         } else {
-            console.error("Elemento no encontrado");
         }
     }
 
@@ -65,7 +62,6 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
                             <STitle>Carrito</STitle>
                             <SContainerCart>
                             {prodCarrito.map((prod)=>{
-                                console.log(prodCarrito.length);
                                 if (prod.descuento > 0) {
                                     precioFinal += prod.descuento
                                 }else {

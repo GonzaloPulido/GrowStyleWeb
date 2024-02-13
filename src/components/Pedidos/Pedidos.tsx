@@ -29,7 +29,6 @@ const Pedidos = () => {
         </SDataTitle>
         <SPedidos>
         {prodCarrito.map((prod)=>{
-            console.log(prodCarrito.length);
             if (prod.descuento > 0) {
                 precioFinal = prod.descuento
             }else {

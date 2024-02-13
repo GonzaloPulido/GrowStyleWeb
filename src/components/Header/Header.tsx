@@ -29,10 +29,8 @@ const Header = () => {
   const selectProfileIcon = () => { // Esta funcion comprueba si el usuario esta logueado o si no lo esta, y decide...
     if (logged) {
       setProfile(true)
-      console.log("Mostrando Perfil");
     } else {
       setLogin(true)
-      console.log("Mostrando Login");
     }
   }
 
@@ -74,6 +72,14 @@ const SLogoGrowStyle = styled(Image)`
   width: 11.875rem;
   height: 3.438rem;
   cursor: pointer;
+
+  @media (max-width: 700px) {
+    margin-left: 5.625rem;
+  }
+
+  @media (max-width: 580px) {
+    margin-left: 2.625rem;
+  }
 `
 
 const SRightContainer = styled.div`

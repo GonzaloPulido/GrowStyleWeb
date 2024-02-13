@@ -41,7 +41,6 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
     
 
     const onSubmit = (data: FieldValues) => {
-        console.log(data);
         onCloseLogin()
         onClose()
         router.push("/perfil")

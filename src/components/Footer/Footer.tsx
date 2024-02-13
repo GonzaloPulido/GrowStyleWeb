@@ -22,18 +22,20 @@ const Footer = () => {
                     <SLogoSocial src={tiktok} alt=''/>
                 </SLogos>
             </SSocialMedia>
-            <SLegalDocuments>
-                <STitle>Documentos legales</STitle>
-                <SHref>Aviso legal</SHref>
-                <SHref>Politica de privacidad</SHref>
-                <SHref>Terminos</SHref>
-            </SLegalDocuments>
-            <SSupport>
-                <STitle>Soporte</STitle>
-                <SHref>Tarjeta regalo</SHref>
-                <SHref>Sobre nosotros</SHref>
-                <SHref>Atencion al cliente</SHref>
-            </SSupport>
+            
+                <SLegalDocuments>
+                    <STitle>Documentos legales</STitle>
+                    <SHref>Aviso legal</SHref>
+                    <SHref>Politica de privacidad</SHref>
+                    <SHref>Terminos</SHref>
+                </SLegalDocuments>
+                <SSupport>
+                    <STitle>Soporte</STitle>
+                    <SHref>Tarjeta regalo</SHref>
+                    <SHref>Sobre nosotros</SHref>
+                    <SHref>Atencion al cliente</SHref>
+                </SSupport>
+            
         </SFooterFirstContainer>
         <SFooterSecondContainer>
             GrowStyle©
@@ -54,6 +56,12 @@ const SFooterFirstContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+
+    @media (max-width: 1050px) {
+        flex-direction: column;
+        gap: 25px;  
+
+    }
 `
 
 const SFooterSecondContainer = styled.div`
@@ -97,6 +105,10 @@ const SLegalDocuments = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    @media (max-width: 1050px) {
+        text-align: center; 
+
+    }
 `
 
 const STitle = styled.h2`
@@ -116,6 +128,19 @@ const SSupport = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    @media (max-width: 1050px) {
+        text-align: center; 
+    }
 `
+
+// const SEnlaces = styled.div`
+//     width: 42%;
+//     display: flex;
+//     justify-content: space-between;
+//     @media (max-width: 700px) {
+//         flex-direction: column;
+//         gap: 25px;
+//     }
+// `
 
 export default Footer

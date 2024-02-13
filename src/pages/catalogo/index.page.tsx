@@ -11,14 +11,14 @@ const Catalogo = () => {
   const [filters, setFilters] = useState(false)
 
   const [prodFavoritos, setProdFavoritos] = useState([
-    {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/OiiAeLc.png"},
+    {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/m3LWBN2.png"},
+    {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/1HdWN9j.png"},
+    {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/Sl4rU1w.png"},
+    {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/U8wbZbi.png"},
+    {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/o5B4A2Q.png"},
+    {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/c87LybL.png"},
+    {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/xEJQ0D4.png"},
   ])
 
 
@@ -31,12 +31,13 @@ const Catalogo = () => {
       </SBlock1>
       <SBlock2>
       {prodFavoritos.map((prod)=>{
-                                const { id, nombre, color, precio, descuento, imagen } = prod;
-                                console.log(imagen);
-                                return(
-                                    <ProductoListado imagen={imagen} nombre={nombre} precioDescuento={descuento} precio={precio} isFav={false}></ProductoListado>
-                                )
-                            })}
+        const { id, nombre, color, precio, descuento, imagen } = prod;
+        // Llamada de imagenes 
+        // conts nuevaImagen = getById(imagen) 
+        return(
+            <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={descuento} precio={precio} isFav={false}></ProductoListado>
+        )
+      })}
       </SBlock2>
     </SContainer>
   )
@@ -59,6 +60,7 @@ const SBlock1 = styled.div`
   align-items: center;
   justify-content: right;
   align-self: end;
+  cursor: pointer;
 `
 
 const SFilterImage = styled(Image)`

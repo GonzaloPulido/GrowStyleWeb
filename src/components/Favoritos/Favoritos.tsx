@@ -25,7 +25,6 @@ const Favoritos = () => {
         </SDataTitle>
         <SFavoritos>
         {prodFav.map((prod)=>{
-            console.log(prodFav.length);
             if (prod.descuento > 0) {
                 precioFinal = prod.descuento
             }else {

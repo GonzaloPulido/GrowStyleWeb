@@ -36,7 +36,7 @@ IndexPage.getLayout = (page: ReactElement) => {
 }
 
 const SMain = styled.main`
-  width: 100%;
+  width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -56,12 +56,20 @@ const SSalesImage = styled(Image)`
     opacity: 0.8;
   }
   
+  @media (max-width: 950px) {
+    width: 40.25rem;
+    height: 27.75rem; 
+  }
 `
 
 const SLogoImage = styled(Image)`
   width: 28.875rem;
   height: 8.75rem;
   cursor: pointer;
+    @media (max-width: 950px) {
+      width: 21.875rem;
+      height: 5.75rem;
+    }
 `
 const SDescription = styled.p`
   width: 50rem;
