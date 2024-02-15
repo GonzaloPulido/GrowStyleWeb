@@ -44,6 +44,9 @@ const SMain = styled.main`
   padding: 1.875rem;
   background-color: ${COLORS.green};
   height: 62rem;
+  @media (max-width: 900px) {
+    justify-content: space-around;
+  }
 `
 
 const SSalesImage = styled(Image)`
@@ -60,6 +63,14 @@ const SSalesImage = styled(Image)`
     width: 40.25rem;
     height: 27.75rem; 
   }
+  @media (max-width: 700px) {
+      width: 30.25rem;
+      height: 21.75rem;
+  }
+  @media (max-width: 700px) {
+      width: 27.25rem;
+      height: 18.75rem;
+  }
 `
 
 const SLogoImage = styled(Image)`
@@ -70,12 +81,26 @@ const SLogoImage = styled(Image)`
       width: 21.875rem;
       height: 5.75rem;
     }
+    @media (max-width: 950px) {
+      width: 18.875rem;
+      height: 5.75rem;
+    }
 `
+
 const SDescription = styled.p`
   width: 50rem;
   text-align: center;
   font-family: ${nunito.style.fontFamily};
-  font-size: 1.25rem; 
+  font-size: 1.25rem;
+    @media (max-width: 900px) {
+        width: 40rem;
+    } 
+    @media (max-width: 700px) {
+        width: 30rem;
+    }
+    @media (max-width: 550px) {
+        width: 25rem;
+    }
 `
 
 export default IndexPage

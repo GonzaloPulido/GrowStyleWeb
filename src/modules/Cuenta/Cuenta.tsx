@@ -31,11 +31,17 @@ const SData = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  @media (max-width: 1180px) {
+    margin: auto;
+  }
 `
 
 const SDataTitle = styled.div`
   font-size: 25px;
   text-decoration: underline;
+  @media (max-width: 1180px) {
+    text-align: center;
+  }
 `
 
 const SDataInputs = styled.div`
@@ -50,23 +56,34 @@ const SDataInput = styled.input`
     height: 4rem;
     border: 0;
     border-bottom: 0.063rem solid ${COLORS.black};
-    background-color: ${COLORS.backgroundWhite};
+    background-color: ${COLORS.green};
     &:focus-visible{
         outline: none;
     }
     &.last{
         align-self: center;
     }
+    @media (max-width: 1180px) {
+        &.last{
+            align-self: flex-start;
+        }
+    }
 `
 
 const SBlock1 = styled.div`
     display: flex;
     gap: 15px;
+    @media (max-width: 1180px) {
+        flex-direction: column;
+    }
 `
 
 const SBlock2 = styled.div`
     display: flex;
     gap: 15px;
+    @media (max-width: 1180px) {
+        flex-direction: column;
+    }
 `
 
 const SButtons = styled.div`
@@ -74,6 +91,10 @@ const SButtons = styled.div`
     gap: 60px;
     justify-content: center;
     margin-top: 20px;
+    @media (max-width: 1180px) {
+        flex-direction: column;
+        gap: 30px;
+    }
 `
 
 const SUpdateButton = styled.button`
@@ -82,6 +103,8 @@ const SUpdateButton = styled.button`
     padding: 5px;
     font-size: 25px;
     cursor: pointer;
+    color: ${COLORS.white};
+    background-color: ${COLORS.darkGreen};
 `
 
 const SDeleteButton = styled.button`
@@ -90,5 +113,7 @@ const SDeleteButton = styled.button`
     padding: 5px;
     font-size: 25px;
     cursor: pointer;
+    color: ${COLORS.white};
+    background-color: ${COLORS.darkGreen};
 `
 export default Cuenta

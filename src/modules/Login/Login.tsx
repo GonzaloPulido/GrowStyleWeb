@@ -11,6 +11,20 @@ import { FieldValues, useForm } from "react-hook-form"
 import { customToast } from "../../share/notifications"
 import Register from "../Register/Register"
 
+// ----------------------
+/* import { getAllUsers } from "../../api/services/usuariosServices"
+
+const fetchAllUsers = async () => {
+    try {
+      const users = await getAllUsers();
+      console.log('Usuarios:', users);
+    } catch (error) {
+      console.error('Error al obtener todos los usuarios:', error);
+    }
+};
+
+fetchAllUsers() */
+
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
     {ssr: false}
@@ -102,7 +116,7 @@ const SShader = styled.div`
 `
 
 const SPopUpContainer = styled.div`
-    width: 32rem;
+    width: 30.5rem;
     height: 32rem;
     background-color: ${COLORS.backgroundWhite};
     border-bottom-left-radius: 0.375rem;

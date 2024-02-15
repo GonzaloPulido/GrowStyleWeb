@@ -58,13 +58,18 @@ const SData = styled.div`
 const SDataTitle = styled.div`
   font-size: 25px;
   text-decoration: underline;
+  @media (max-width: 1180px) {
+    text-align: center;
+  }
 `
 
 const SFavoritos = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
-    
+    @media (max-width: 1180px) {
+    margin: auto;
+  }
 `
 
 const SFav = styled.div`
@@ -72,18 +77,29 @@ const SFav = styled.div`
     display: flex;
     gap: 90px;
     border-bottom: 2px solid ${COLORS.gray};
+    @media (max-width: 820px) {
+        flex-direction: column;
+        gap: 15px;
+        width: 350px;
+    }
 `
 
 const SFavImage = styled(Image)`
     width: 150px;
     height: 200px;
+    @media (max-width: 820px) {
+    align-self: center;
+    }
 `
 
 const SInfoContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 70px;
-    
+    @media (max-width: 820px) {
+        align-self: center;
+        gap: 30px;
+    }
 `
 
 const SNombreFav = styled.h2`
@@ -97,6 +113,11 @@ const SDatoSFav = styled.div`
     //gap: 70px;
     //margin-left: 50px;
     justify-content: space-between;
+    @media (max-width: 820px) {
+       margin: auto;
+       justify-content: space-around;
+       margin-bottom: 15px;
+    }
 `
 
 const SColor = styled.div`

@@ -49,7 +49,10 @@ const SContainer = styled.main`
   gap: 50px;
   padding: 1.875rem;
   background-color: ${COLORS.green};
-  height: 50rem;
+  min-height: 50rem;
+  @media (max-width: 1200px) {
+    flex-direction: column;
+  }
 `
 const SLeft = styled.div`
   
@@ -65,6 +68,14 @@ const SRight = styled.div`
 const SCardImage = styled(Image)`
   width: 700px;
   height: 418px;
+  @media (max-width: 800px) {
+    width: 550px;
+    height: 318px;
+  }
+  @media (max-width: 800px) {
+    width: 450px;
+    height: 250px;
+  }
 `
 
 const STitle = styled.h1`

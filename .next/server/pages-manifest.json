@@ -2,8 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/": "pages/index.js",
-  "/catalogo": "pages/catalogo.js",
-  "/producto/[id]": "pages/producto/[id].js",
+  "/atencioncliente": "pages/atencioncliente.js",
   "/perfil": "pages/perfil.js"
 }

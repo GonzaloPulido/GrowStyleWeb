@@ -118,11 +118,17 @@ const SUpContainer = styled.div`
 const STitle = styled.h1`
   font-size: 40px;
   color: ${COLORS.black};
+  @media (max-width: 600px) {
+    font-size: 30px;
+  }
 `
 
 const SDescription = styled.h2`
   font-size: 20px;
   color: ${COLORS.black};
+  @media (max-width: 600px) {
+    font-size: 15px;
+  }
 `
 
 const SForm = styled.form`
@@ -133,6 +139,12 @@ const SForm = styled.form`
   justify-content: center;
   gap: 2.125rem;
   margin-bottom: 40px;
+  @media (max-width: 860px) {
+    width: 35rem;
+  }
+  @media (max-width: 600px) {
+    width: 20rem;
+  }
 `
 
 const SInput = styled.input`
@@ -150,6 +162,9 @@ const SBlock1 = styled.div`
   display: flex;
   gap: 20px;
   justify-content: center;
+  @media (max-width: 860px) {
+    flex-direction: column;
+  }
 `
 const SButton = styled.button`
   font-size: 1.25rem;

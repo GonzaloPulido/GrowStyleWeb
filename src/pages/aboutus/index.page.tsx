@@ -44,25 +44,48 @@ const SMain = styled.main`
 
 const STitle = styled.h1`
   font-size: 60px;
+  @media (max-width: 850px) {
+    font-size: 50px;
+  }
+  @media (max-width: 850px) {
+    font-size: 40px;
+  }
 `
 
 const SAboutUsImg = styled(Image)`
   width: 50.25rem;
   height: 33.75rem; 
   border-radius: 0.375rem;
+  @media (max-width: 850px) {
+    width: 39.25rem;
+    height: 26.75rem; 
+  }
+  @media (max-width: 660px) {
+    width: 30.25rem;
+    height: 20.75rem;
+  }
+  @media (max-width: 550px) {
+    width: 26.25rem;
+    height: 17.75rem;
+  }
 `
 
-const SLogoImage = styled(Image)`
-  width: 28.875rem;
-  height: 8.75rem;
-  cursor: pointer;
-`
 const SDescription = styled.p`
   width: 50rem;
   text-align: center;
   font-family: ${nunito.style.fontFamily};
   font-size: 1.25rem; 
+  @media (max-width: 850px) {
+    width: 40rem;
+  }
+  @media (max-width: 660px) {
+    width: 30rem;
+  }
+  @media (max-width: 550px) {
+    width: 25rem;
+  }
 `
+
 AboutUs.getLayout = (page: ReactElement) => {
     return <AppLayout title={''}>{page}</AppLayout>
   }

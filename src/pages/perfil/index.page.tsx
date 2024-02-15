@@ -12,6 +12,7 @@ import Direccion from '../../modules/Direccion/Direccion'
 import Pedidos from '../../components/Pedidos/Pedidos'
 import Favoritos from '../../components/Favoritos/Favoritos'
 import router from 'next/router'
+import { COLORS } from '../../share/colors'
 
 const Perfil = () => {
   const [selected, setSelected] = useState(1)
@@ -68,9 +69,16 @@ const SGeneralContainer = styled.div`
   padding-top: 150px;
   justify-content: center;
   min-height: 635px;
+  background-color: ${COLORS.green};
+  @media (max-width: 1180px) {
+    flex-direction: column;
+    padding-top: 50px;
+  }
 `
 const SOptionsContainer = styled.div`
-
+  @media (max-width: 1180px) {
+    margin:auto;
+  }
 `
 
 const SOptionsTitle = styled.div`

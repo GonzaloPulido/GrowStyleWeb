@@ -227,7 +227,7 @@ const SShader = styled.div`
 `
 
 const SPopUpContainer = styled.div`
-    width: 31rem;
+    width: 30.5rem;
     height: 37rem;
     background-color: ${COLORS.backgroundWhite};
     border-bottom-left-radius: 0.375rem;
