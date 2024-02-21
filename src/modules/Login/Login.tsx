@@ -11,20 +11,6 @@ import { FieldValues, useForm } from "react-hook-form"
 import { customToast } from "../../share/notifications"
 import Register from "../Register/Register"
 
-// ----------------------
-/* import { getAllUsers } from "../../api/services/usuariosServices"
-
-const fetchAllUsers = async () => {
-    try {
-      const users = await getAllUsers();
-      console.log('Usuarios:', users);
-    } catch (error) {
-      console.error('Error al obtener todos los usuarios:', error);
-    }
-};
-
-fetchAllUsers() */
-
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
     {ssr: false}

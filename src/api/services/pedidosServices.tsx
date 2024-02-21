@@ -38,7 +38,7 @@ export const createPedido = async (pedidoData: Pedido): Promise<void> => {
   }
 };
 
-export const updatePedidoStatus = async (pedidoId: number, status: string): Promise<void> => {
+export const updatePedidoStatus = async (pedidoId: number, status: number): Promise<void> => {
   try {
     await axios.put(`${API_URL}/pedidos/${pedidoId}`, { status });
   } catch (error) {
