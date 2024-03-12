@@ -1,8 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
+import useAuthStore from '../../store/loginStore'
 
 const Direccion = () => {
+    const usuarioLogueado = useAuthStore.getState().loggedUser
+
+
   return (
     <SData>
         <SDataTitle>
@@ -10,16 +14,15 @@ const Direccion = () => {
         </SDataTitle>
         <SDataInputs>
             <SBlock1>
-                <SDataInput placeholder='Direccion'/>
-                <SDataInput placeholder='Mas informacion'/>
+                <SDataInput placeholder='Direccion' defaultValue={usuarioLogueado?.calle}/>
+                <SDataInput placeholder='Mas informacion' defaultValue={usuarioLogueado?.numero}/>
             </SBlock1>
             <SBlock2>
-                <SDataInput placeholder='Codigo Postal'/>
-                <SDataInput placeholder='Ciudad'/>
+                <SDataInput placeholder='Codigo Postal' defaultValue={usuarioLogueado?.codigo_postal}/>
+                <SDataInput placeholder='Ciudad' defaultValue={usuarioLogueado?.ciudad}/>
             </SBlock2>
             <SBlock3>
-            <SDataInput placeholder='Provincia'/>
-            <SDataInput placeholder='Pais'/>
+                <SDataInput placeholder='Provincia' defaultValue={usuarioLogueado?.provincia} className='last'/>
             </SBlock3>
         </SDataInputs>
         <SButtons>
@@ -89,8 +92,7 @@ const SBlock2 = styled.div`
 `
 
 const SBlock3 = styled.div`
-    display: flex;
-    gap: 15px;
+    margin: auto;
     @media (max-width: 1180px) {
         flex-direction: column;
     }

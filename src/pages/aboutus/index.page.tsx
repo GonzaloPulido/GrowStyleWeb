@@ -73,7 +73,6 @@ const SAboutUsImg = styled(Image)`
 const SDescription = styled.p`
   width: 50rem;
   text-align: center;
-  font-family: ${nunito.style.fontFamily};
   font-size: 1.25rem; 
   @media (max-width: 850px) {
     width: 40rem;

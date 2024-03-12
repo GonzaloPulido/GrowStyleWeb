@@ -15,7 +15,24 @@ const nextConfig = {
     basePath: process.env.NEXT_PUBLIC_BASE_URL, // Establece la ruta base de la aplicación
     eslint:{
         dirs: ['pages', 'utils'] // Directorios donde trabajará eslint
-    }
+    },
+    webpack(config, { isServer }) {
+        // Añade configuración para manejar archivos de video
+        config.module.rules.push({
+          test: /\.(mp4|webm)$/i,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                publicPath: '/_next',
+                name: 'static/videos/[name].[hash].[ext]',
+              },
+            },
+          ],
+        });
+    
+        return config;
+      },
 }
 
 export default nextConfig;

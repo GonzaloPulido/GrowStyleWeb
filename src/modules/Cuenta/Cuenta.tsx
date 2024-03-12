@@ -1,8 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
+import useAuthStore from '../../store/loginStore'
+import { FieldValues, useForm } from 'react-hook-form'
+import { getUserById } from '../../api/services/usuariosServices'
 
 const Cuenta = () => {
+    const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+    const usuarioLogueado = useAuthStore.getState().loggedUser
+    const onSubmit = async (data: FieldValues) => {
+        
+    } // Siguiente trabajo
   return (
     <SData>
         <SDataTitle>
@@ -10,17 +18,65 @@ const Cuenta = () => {
         </SDataTitle>
         <SDataInputs>
             <SBlock1>
-                <SDataInput placeholder='Nombre'/>
-                <SDataInput placeholder='Apellidos'/>
+                <SDataInput placeholder='Nombre' defaultValue={usuarioLogueado?.nombre}
+                {...register('nombre',{
+                    required: "Este campo es obligatorio",
+                    pattern: {
+                        value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
+                        message: "Letras, longitud 3 a 15"
+                    },
+                })}
+                />
+                {errors.nombre && <SError>{errors.nombre.message as string}</SError>}
+                <SDataInput placeholder='Apellidos' defaultValue={usuarioLogueado?.apellidos}
+                {...register('apellidos',{
+                    required: "Este campo es obligatorio",
+                    pattern: {
+                        value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
+                        message: "Letras, longitud 3 a 15"
+                    },
+                })}
+                />
+                {errors.apellidos && <SError>{errors.apellidos.message as string}</SError>}  
             </SBlock1>
             <SBlock2>
-                <SDataInput placeholder='Telefono'/>
-                <SDataInput placeholder='Email'/>
+                <SDataInput placeholder='Telefono' defaultValue={usuarioLogueado?.telefono}
+                {...register('telefono',{
+                    required: "Este campo es obligatorio",
+                    pattern: {
+                        value: /^\+?[0-9\s-]+$/ ,
+                        message: "Formato de telefono no valido"
+                    },
+                })}
+                />
+                {errors.telefono && <SError>{errors.telefono.message as string}</SError>} 
+                <SDataInput placeholder='Email' defaultValue={usuarioLogueado?.email}
+                {...register('email',{
+                    required: "Este campo es obligatorio",
+                    pattern: {
+                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                        message: "Formato de email incorrecto"
+                    },
+                })}
+                />
+                {errors.email && <SError>{errors.email.message as string}</SError>}
             </SBlock2>
-            <SDataInput placeholder='Password' className='last'/>
+            <SBlock3>
+                <SDataInput type='text' defaultValue={usuarioLogueado?.contrasenya} placeholder="Contraseña" autoComplete="off" className='last'
+                {...register('contrasenya',{
+                    required: "Este campo es obligatorio",
+                    pattern: {
+                        value: /^(?=.*[a-zA-Z])(?=.*\d).{5,10}$/,
+                        message: "Minus. y mayus. con simbolos y longitud 5 a 10"
+                    },
+                })}
+                />
+                {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>}
+            </SBlock3>
+            
         </SDataInputs>
         <SButtons>
-            <SUpdateButton>Actualizar Cuenta</SUpdateButton>
+            <SUpdateButton onClick={handleSubmit(onSubmit)}>Actualizar Cuenta</SUpdateButton>
             <SDeleteButton>Eliminar Cuenta</SDeleteButton>
         </SButtons>
     </SData>
@@ -85,6 +141,11 @@ const SBlock2 = styled.div`
         flex-direction: column;
     }
 `
+const SBlock3 = styled.div`
+    display: flex;
+    gap: 15px;
+    margin: auto;
+`
 
 const SButtons = styled.div`
     display: flex;
@@ -115,5 +176,11 @@ const SDeleteButton = styled.button`
     cursor: pointer;
     color: ${COLORS.white};
     background-color: ${COLORS.darkGreen};
+`
+
+const SError = styled.span`
+    height: 0px;
+    color: ${COLORS.darkRed};
+    font-size: 15px;
 `
 export default Cuenta

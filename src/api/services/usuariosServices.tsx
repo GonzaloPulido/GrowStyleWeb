@@ -3,18 +3,17 @@ import axios, { AxiosResponse } from 'axios';
 const API_URL = 'http://localhost:3001';
 
 interface User {
-  id: number;
-  rol: string;
+  rol?: string;
   nombre: string;
   apellidos: string;
   telefono: string;
   email: string;
   contrasenya: string;
-  calle: string;
-  numero: string;
-  ciudad: string;
-  codigo_postal: string;
-  provincia: string;
+  calle?: string;
+  numero?: string;
+  ciudad?: string;
+  codigo_postal?: string;
+  provincia?: string;
 }
 
 export const getAllUsers = async (): Promise<User[]> => {

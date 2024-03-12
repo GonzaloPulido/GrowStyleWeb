@@ -9,6 +9,9 @@ import closedEye from "../../../public/icons/closedEyeIcon.svg"
 import { useEffect, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { customToast } from "../../share/notifications"
+import { fetchAllUsuarios, fetchCreateUsuario } from "../../api/utils/usuariosFunctions"
+import useAuthStore from "../../store/loginStore"
+
 
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
@@ -24,26 +27,59 @@ interface RegisterProps {
 const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
     const [visiblePassword, setvisiblePassword] = useState(false)
     const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+    const [errorAlertShown, setErrorAlertShown] = useState(false)
 
     useEffect(() => {
-        if (errors.nombre != null || errors.apellidos != null || errors.telefono != null || 
-            errors.email != null || errors.password != null || errors.checkPassword != null) {
+        if ((errors.nombre || errors.apellidos || errors.telefono || errors.email || errors.password || errors.checkPassword) &&
+            !errorAlertShown) {
             customToast("Credenciales incorrectas", {
                 type: "error",
                 position: "top-left",
-                //toastId: "" 
                 autoClose: 3000,
                 theme: "colored",
-            })
+            });
+            setErrorAlertShown(true);
+        } else if (!errors.nombre && !errors.apellidos && !errors.telefono && !errors.email && !errors.password && !errors.checkPassword) {
+            setErrorAlertShown(false);
         }
-
-    }, [errors.nombre, errors.apellidos, errors.telefono, errors.email, errors.password, errors.checkPassword])
+    }, [errors.nombre, errors.apellidos, errors.telefono, errors.email, errors.password, errors.checkPassword, errorAlertShown]);
     
 
-    const onSubmit = (data: FieldValues) => {
-        onCloseLogin()
-        onClose()
-        router.push("/perfil")
+    const onSubmit = async (data: FieldValues) => {
+        try {
+            const usuarios = await fetchAllUsuarios()
+            const {nombre,apellidos,telefono,email,contrasenya} = data
+            const emailEnUso = usuarios?.some((usuario: any) => usuario.email === email);
+            if (emailEnUso) {
+                if (!errorAlertShown) {
+                    customToast("Email en uso", {
+                        type: "error",
+                        position: "top-left",
+                        autoClose: 3000,
+                        theme: "colored",
+                    });
+                    setErrorAlertShown(true);
+                } else{
+                    setErrorAlertShown(false);
+                }
+            }else {
+                const myUser = {nombre: nombre, apellidos: apellidos, telefono:telefono, email:email, contrasenya:contrasenya}
+                fetchCreateUsuario(myUser)
+                useAuthStore.getState().login(myUser);
+                /* Añadir tiempo antes de que se cierre el componente
+                customToast(`Bienvenido ${myUser.nombre}`, {
+                    type: "success",
+                    position: "top-left",
+                    autoClose: 3000,
+                    theme: "colored",
+                }); */
+                onCloseLogin()
+                onClose()
+                router.push("/")
+            }
+        } catch (error) {
+            console.log("Error");
+        }
     }
 
     return(
@@ -56,59 +92,65 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
                                 <SCloseImage src={close} alt=""></SCloseImage>
                             </SCloseButton>
                             <STitle>Registrate</STitle>
-                            <SDescription>Regístrate y no te pierdas ninguna promoción, oferta o descuento</SDescription>
+                            <SDescription>Regístrate y no te pierdas ninguna promoción</SDescription>
                             <SForm>
                                 <SInput type="text" placeholder="Nombre" autoComplete="off"
                                 {...register('nombre',{
                                     required: "Este campo es obligatorio",
                                     pattern: {
                                         value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
-                                        message: "Formato de nombre incorrecto"
+                                        message: "Letras, longitud 3 a 15"
                                     },
                                 })}
                                 />
+                                {errors.nombre && <SError>{errors.nombre.message as string}</SError>}
                                 <SInput type="text" placeholder="Apellidos" autoComplete="off"
                                 {...register('apellidos',{
                                     required: "Este campo es obligatorio",
                                     pattern: {
                                         value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
-                                        message: "Formato de apellidos incorrecto"
+                                        message: "Letras, longitud 3 a 15"
                                     },
                                 })}
-                                />  
+                                />
+                                {errors.apellidos && <SError>{errors.apellidos.message as string}</SError>}  
                                 <SInput type="text" placeholder="Telefono" autoComplete="off"
                                 {...register('telefono',{
                                     required: "Este campo es obligatorio",
                                     pattern: {
                                         value: /^\+?[0-9\s-]+$/ ,
-                                        message: "Formato de telefono incorrecto"
+                                        message: "Formato de telefono no valido"
                                     },
                                 })}
-                                />   
+                                />  
+                                {errors.telefono && <SError>{errors.telefono.message as string}</SError>} 
                                 <SInput type='text' placeholder="Email" autoComplete="off"
                                 {...register('email',{
                                     required: "Este campo es obligatorio",
                                     pattern: {
                                         value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                        message: "Tu email no es correcto"
+                                        message: "Formato de email incorrecto"
                                     },
                                 })}
                                 /> 
+                                {errors.email && <SError>{errors.email.message as string}</SError>}
                                 <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
-                                {...register('password',{
+                                {...register('contrasenya',{
                                     required: "Este campo es obligatorio",
                                     pattern: {
                                         value: /^(?=.*[a-zA-Z])(?=.*\d).{5,10}$/,
-                                        message: "Tu contraseña no es correcta"
+                                        message: "Minus. y mayus. con simbolos y longitud 5 a 10"
                                     },
                                 })}
                                 />   
+                                {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>}
                                 <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Repetir Contraseña" autoComplete="off"
                                 {...register('checkPassword', {
                                     required: "Este campo es obligatorio",
-                                    validate: value => value === getValues('password') || "Las contraseñas no coinciden"
+                                    validate: value => value === getValues('contrasenya') || "Las contraseñas no coinciden"
                                 })}
                                 />
+                                {errors.checkPassword && <SError>{errors.checkPassword.message as string}</SError>}
                                 <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
                             </SForm>
                             <SButton onClick={handleSubmit(onSubmit)}>Crear Cuenta</SButton>
@@ -134,7 +176,7 @@ const SShader = styled.div`
 
 const SPopUpContainer = styled.div`
     width: 30.5rem;
-    height: 50rem;
+    height: 52rem;
     background-color: ${COLORS.backgroundWhite};
     border-bottom-left-radius: 0.375rem;
     overflow: hidden;
@@ -189,7 +231,7 @@ const SForm = styled.form`
 
 const SInput = styled.input`
     font-size: 1.25rem;
-    height: 4rem;
+    height: 3rem;
     border: 0;
     border-bottom: 0.063rem solid ${COLORS.black};
     background-color: ${COLORS.backgroundWhite};
@@ -217,6 +259,12 @@ const SButton = styled.button`
     align-self: center;
     width: 25rem;
     cursor: pointer;
+`
+
+const SError = styled.span`
+    height: 0px;
+    color: ${COLORS.darkRed};
+    font-size: 15px;
 `
 
 export default Login

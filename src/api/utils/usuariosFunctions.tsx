@@ -1,24 +1,24 @@
 import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from "../services/usuariosServices";
 
 interface User {
-    id: number;
-    rol: string;
+    rol?: string;
     nombre: string;
     apellidos: string;
     telefono: string;
     email: string;
     contrasenya: string;
-    calle: string;
-    numero: string;
-    ciudad: string;
-    codigo_postal: string;
-    provincia: string;
+    calle?: string;
+    numero?: string;
+    ciudad?: string;
+    codigo_postal?: string;
+    provincia?: string;
 }
 
 export const fetchAllUsuarios = async () => {
     try {
       const users = await getAllUsers();
       console.log('Todos los usuarios:', users);
+      return users
     } catch (error) {
       console.error('Error al obtener todos los usuarios:', error);
     }

@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout'
 import styled from 'styled-components'
 import profile from '../../../public/icons/profileIcon.svg'
@@ -13,19 +13,30 @@ import Pedidos from '../../components/Pedidos/Pedidos'
 import Favoritos from '../../components/Favoritos/Favoritos'
 import router from 'next/router'
 import { COLORS } from '../../share/colors'
+import useAuthStore from '../../store/loginStore'
 
 const Perfil = () => {
   const [selected, setSelected] = useState(1)
-  const nombre = "Gonzalo"
-
+  const checkLogin = useAuthStore.getState().isLogged;
+  const usuarioLogueado = useAuthStore.getState().loggedUser
+  const userName = usuarioLogueado?.nombre
+  console.log(userName);
+  console.log(usuarioLogueado);
   
-
+  
+  useEffect(() => {
+    console.log(checkLogin);
+    if (!checkLogin){
+      router.push('/')
+    }
+  }, [])
+  
   return (
     <SGeneralContainer>
     <SOptionsContainer>
       <SOptionsDiv>
         <SOptionsTitle>
-          Bienvenido {nombre}
+          Menu de perfil
         </SOptionsTitle>
         <SOptions>
           <SOption onClick={() => setSelected(1)}>
@@ -46,7 +57,7 @@ const Perfil = () => {
           </SOption>
           <SOption onClick={() => router.push("/")}>
             <SOptionIcon src={logout} alt=''/>
-            <SOptionTitle className={selected == 5 ? "selected" : ""}>Cerrar Sesión</SOptionTitle>
+            <SOptionTitle className={selected == 5 ? "selected" : ""} onClick={() => useAuthStore.getState().logout()}>Cerrar Sesión</SOptionTitle>
           </SOption>
         </SOptions>
       </SOptionsDiv>
@@ -81,7 +92,7 @@ const SOptionsContainer = styled.div`
   }
 `
 
-const SOptionsTitle = styled.div`
+const SOptionsTitle = styled.h2`
   font-size: 25px;
   text-decoration: underline;
 `

@@ -4,13 +4,14 @@ import Head from 'next/head'
 import { ReactElement, ReactNode } from 'react'
 import growStyleIcon from "../../public/icons/logoGrowStyle.png"
 import styled, { createGlobalStyle } from 'styled-components'
-import {Poppins } from "next/font/google"
+import {Nunito, Poppins } from "next/font/google"
 import { COLORS } from '../share/colors'
 import {ToastCloseButton} from '../share/notifications'
 import { ToastContainer } from 'react-toastify'
-import { nunito } from './index.page'
+//import { nunito } from './index.page'
 import 'react-toastify/dist/ReactToastify.css';
 export const poppins = Poppins({ subsets: ["latin"], weight: ["600"] })
+export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P,IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -45,6 +46,10 @@ const GlobalStyle = createGlobalStyle`
     font-size: var(--medium);
     font-weight: 600;
     font-family: ${poppins.style.fontFamily};
+  }
+
+  p{
+    font-family: ${nunito.style.fontFamily};
   }
 
   a,a:visited{

@@ -12,12 +12,13 @@ import Menu from '../../modules/Menu/Menu'
 import Login from '../../modules/Login/Login'
 import Favoritos from '../../modules/Favoritos/Favoritos'
 import Carrito from '../../modules/Carrito/Carrito'
+import useAuthStore from '../../store/loginStore'
 
 
 
 const Header = () => {
   const [menu, setMenu] = useState(false)
-
+  const checkLogin = useAuthStore.getState().isLogged;
   // Variables para el icono de perfil
   const [login, setLogin] = useState(false)
   const [favoritos, setFavoritos] = useState(false)
@@ -39,7 +40,7 @@ const Header = () => {
       <SSidebarIcon src={barsIcon} alt='' onClick={() => setMenu(true)}/>
       <SLogoGrowStyle src={logoGrow.src} alt='' width="0" height="0" onClick={() => router.push("/")}/>
       <SRightContainer>
-        <SProfileIcon src={profileIcon} alt='' onClick={() => selectProfileIcon()}/>
+        <SProfileIcon src={profileIcon} alt='' /* onClick={() => selectProfileIcon()} */ onClick={!checkLogin ? () => selectProfileIcon() : () => router.push('/perfil')} />
         <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)}/>
         <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)}/>
       </SRightContainer>

@@ -10,6 +10,8 @@ import { useEffect, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { customToast } from "../../share/notifications"
 import Register from "../Register/Register"
+import { fetchAllUsuarios } from "../../api/utils/usuariosFunctions"
+import useAuthStore from "../../store/loginStore"
 
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
@@ -25,9 +27,11 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
     const [registerPopUp, setRegisterPopUp] = useState(false)
     const [visiblePassword, setvisiblePassword] = useState(false)
     const {register, formState: {errors}, handleSubmit, control} = useForm()
+    const [errorAlertShown, setErrorAlertShown] = useState(false)
+
 
     useEffect(() => {
-        if (errors.email != null || errors.password != null) {
+        if (errors.email != null || errors.password != null && !errorAlertShown) {
             customToast("Credenciales incorrectas", {
                 type: "error",
                 position: "top-left",
@@ -35,14 +39,52 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
                 autoClose: 3000,
                 theme: "colored",
             })
+        } else if (!errors.email && !errors.password ){
+            setErrorAlertShown(false);
         }
 
     }, [errors.email, errors.password])
     
 
-    const onSubmit = (data: FieldValues) => {
-        onClose()
-        router.push("/perfil")
+    const onSubmit = async (data: FieldValues) => {
+        try {
+            const usuarios = await fetchAllUsuarios();
+            const { email, contrasenya } = data;
+            const usuario = usuarios?.find((usuario: any) => usuario.email === email);
+            if (usuario) {
+                if (usuario.contrasenya === contrasenya) {
+                    useAuthStore.getState().login(usuario);
+                    onClose();
+                    router.push("/");
+                } else {
+                    if (!errorAlertShown) {
+                        customToast("Email o contraseña incorrectos", {
+                            type: "error",
+                            position: "top-left",
+                            autoClose: 3000,
+                            theme: "colored",
+                        });
+                        setErrorAlertShown(true);
+                    } else{
+                        setErrorAlertShown(false);
+                    }
+                }
+            } else {
+                if (!errorAlertShown) {
+                    customToast("Email o contraseña incorrectos", {
+                        type: "error",
+                        position: "top-left",
+                        autoClose: 3000,
+                        theme: "colored",
+                    });
+                    setErrorAlertShown(true);
+                } else{
+                    setErrorAlertShown(false);
+                }
+            }
+        } catch (error) {
+            console.error('Error al procesar el formulario:', error);
+        }
     }
       
     return(
@@ -66,19 +108,24 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
                                     },
                                 })}
                                 />
+                                {errors.email && <SError>{errors.email.message as string}</SError>}
                                 <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
-                                {...register('password',{
+                                {...register('contrasenya',{
                                     required: "Este campo es obligatorio",
                                     pattern: {
                                         value: /^(?=.*[a-zA-Z])(?=.*\d).{5,10}$/,
                                         message: "Tu contraseña no es correcta"
                                     },
                                 })}
-                                />   
+                                />  
+                                {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>} 
                                 <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
                             </SForm>
-                            <SButton onClick={handleSubmit(onSubmit)}>Iniciar Sesión</SButton>
-                            <SButton onClick={() => {setRegisterPopUp(true)}}>Crear Cuenta</SButton>
+                            <SButtonsContainer>
+                                <SButton onClick={handleSubmit(onSubmit)}>Iniciar Sesión</SButton>
+                                <SButton onClick={() => {setRegisterPopUp(true)}}>Crear Cuenta</SButton>
+                            </SButtonsContainer>
+                            
                             {registerPopUp && (<Register onCloseLogin={onClose} isActive={registerPopUp} onClose={() => setRegisterPopUp(false)} />)}
                         </SPopUpContainer>
                     </SShader>
@@ -103,7 +150,7 @@ const SShader = styled.div`
 
 const SPopUpContainer = styled.div`
     width: 30.5rem;
-    height: 32rem;
+    height: 36rem;
     background-color: ${COLORS.backgroundWhite};
     border-bottom-left-radius: 0.375rem;
     overflow: hidden;
@@ -187,6 +234,19 @@ const SButton = styled.button`
     align-self: center;
     width: 25rem;
     cursor: pointer;
+`
+
+const SError = styled.span`
+    height: 0px;
+    color: ${COLORS.darkRed};
+    font-size: 15px;
+`
+
+const SButtonsContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 `
 
 export default Login
