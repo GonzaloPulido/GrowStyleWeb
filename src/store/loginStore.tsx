@@ -17,7 +17,7 @@ interface User {
 }
 
 interface AuthState {
-  loggedUser: User | null;
+  loggedUser: User | any | null;
   isLogged: boolean;
   login: (user: User) => void;
   logout: () => void;

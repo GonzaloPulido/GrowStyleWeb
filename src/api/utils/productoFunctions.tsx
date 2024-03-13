@@ -18,6 +18,7 @@ interface Product {
 export const fetchAllProductos = async () => {
     try {
       const prod = await getAllProducts();
+      return prod
       console.log('Todos los productos:', prod);
     } catch (error) {
       console.error('Error al obtener todos los productos:', error);
@@ -27,7 +28,7 @@ export const fetchAllProductos = async () => {
 export const fetchProductById = async (id: number) => {
     try {
       const favs = await getProductById(id);
-      console.log('Producto by Id:', favs);
+      return favs
     } catch (error) {
       console.error('Error al obtener el producto:', error);
     }

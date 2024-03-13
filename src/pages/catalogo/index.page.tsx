@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
@@ -6,22 +6,44 @@ import Image from 'next/image'
 import filter from '../../../public/icons/filterIcon.svg'
 import Filtros from '../../modules/Filtros/Filtros'
 import ProductoListado from '../../modules/ProductoListado/ProductoListado'
+import { fetchAllProductos } from '../../api/utils/productoFunctions'
+
+interface Producto {
+  id: number;
+  nombre: string;
+  precio: number;
+  precio_descuento: number;
+  color: string;
+  imagen: string;
+  talla_xs: number;
+  talla_s: number;
+  talla_m: number;
+  talla_l: number;
+  talla_xl: number;
+  talla_xxl: number;
+}
 
 const Catalogo = () => {
   const [filters, setFilters] = useState(false)
+  const [productos, setProductos] = useState<Producto[]>([]);
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchAllProductos();
+        if (data && Array.isArray(data)) {
+          setProductos(data);
+        } else {
+          console.error('Error: Datos de productos no válidos.');
+        }
+      } catch (error) {
+        console.error('Error fetching productos:', error);
+      }
+    };
 
-  const [prodFavoritos, setProdFavoritos] = useState([
-    {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/OiiAeLc.png"},
-    {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/m3LWBN2.png"},
-    {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/1HdWN9j.png"},
-    {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/Sl4rU1w.png"},
-    {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/U8wbZbi.png"},
-    {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/o5B4A2Q.png"},
-    {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/c87LybL.png"},
-    {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 10, descuento: 20.05, imagen: "https://i.imgur.com/xEJQ0D4.png"},
-  ])
-
-
+    fetchData();
+  }, []);
+  
   return (
     <SContainer>
       {(filters) && (<Filtros isActive={filters} onClose={() => setFilters(false)}/>)}
@@ -30,12 +52,10 @@ const Catalogo = () => {
         <SFilterTitle >Filtros</SFilterTitle>
       </SBlock1>
       <SBlock2>
-      {prodFavoritos.map((prod)=>{
-        const { id, nombre, color, precio, descuento, imagen } = prod;
-        // Llamada de imagenes 
-        // conts nuevaImagen = getById(imagen) 
+      {productos.map( (prod)=>{
+        const { id, nombre, precio, precio_descuento, imagen  } = prod;
         return(
-            <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={descuento} precio={precio} isFav={false}></ProductoListado>
+            <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={precio_descuento} precio={precio} isFav={false}></ProductoListado>
         )
       })}
       </SBlock2>

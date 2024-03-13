@@ -1,9 +1,12 @@
 import Image from 'next/image'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
 import fav from '../../../public/icons/heartIcon.svg'
+import noFav from '../../../public/icons/noHeartIcon.svg'
 import { useRouter } from 'next/router'
+import { base64topng } from '../../functions/generalFunctions'
+import defaultImage from '../../../public/icons/default.png'
 
 interface ProductoListadoProps {
     id: number;
@@ -11,20 +14,38 @@ interface ProductoListadoProps {
     nombre: string,
     precioDescuento: number,
     precio: number,
-    isFav?: boolean,
+    isFav: boolean,
     
 
 }
 
 const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,precioDescuento,precio,isFav}) => {
     const router = useRouter();
-
+    const [imageSrc, setImageSrc] = useState('')
+    
     const handleImageClick = () => {
         router.push(`/producto/${id}`);
     };
+
+    useEffect(() => {
+        const fetchImage = async () => {
+          try {
+            const img = await base64topng(imagen);
+            setImageSrc(img);
+          } catch (error) {
+            console.error('Error al cargar la imagen:', error);
+          }
+        };
+    
+        fetchImage();
+      }, []);
+
+
+    
+
   return (
     <SProductoContainer>
-        <SImagen src={imagen} alt='' width={0} height={0} onClick={handleImageClick}/>
+        <SImagen src={ imageSrc ? imageSrc :  defaultImage.src} alt='' width={0} height={0} onClick={handleImageClick}/>
         <SInformacion>
             <SLeftContainer>
                 <SName>{nombre}</SName>
@@ -34,7 +55,7 @@ const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,preci
                 </SPrices>
             </SLeftContainer>
             <SRightContainer>
-                <SFavIcon src={fav} alt=''/>
+                <SFavIcon src={isFav ? fav : noFav} alt=''/>
             </SRightContainer>
         </SInformacion>
     </SProductoContainer>
@@ -44,7 +65,7 @@ const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,preci
 const SProductoContainer = styled.div`
     width: 350px;
     height: 600px;
-    background-color: red;
+    //background-color: red;
     display: flex;
     flex-direction: column;
 `

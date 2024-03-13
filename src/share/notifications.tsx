@@ -10,7 +10,7 @@ import {
   toast,
 } from "react-toastify"
 import toastCloseIcon from "../../public/icons/closeIconToast.svg"
-import toastSuccessIcon from "../../public/icons/closedEyeIcon.svg" // Icono no valido (Hay que cambiarlo en caso de necesitar una notificacion succesfull )
+import toastSuccessIcon from "../../public/icons/success.svg" // Icono no valido (Hay que cambiarlo en caso de necesitar una notificacion succesfull )
 import toastErrorIcon from "../../public/icons/ErrorIcon.svg"
 
 type ToastOptionsWithoutType = Omit<ToastOptions<{}>, "type">

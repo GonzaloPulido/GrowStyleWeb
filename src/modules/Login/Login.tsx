@@ -54,6 +54,12 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
             if (usuario) {
                 if (usuario.contrasenya === contrasenya) {
                     useAuthStore.getState().login(usuario);
+                    customToast("Bienvenido a GrowStyle", {
+                        type: "success",
+                        position: "top-left",
+                        autoClose: 3000,
+                        theme: "colored",
+                    });
                     onClose();
                     router.push("/");
                 } else {
@@ -99,27 +105,31 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
                             <STitle>Iniciar sesión</STitle>
                             <SDescription>Regístrate y no te pierdas ninguna promoción, oferta o descuento</SDescription>
                             <SForm>
-                                <SInput type='text' placeholder="Email" autoComplete="off"
-                                {...register('email',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                        message: "Tu email no es correcto"
-                                    },
-                                })}
-                                />
-                                {errors.email && <SError>{errors.email.message as string}</SError>}
-                                <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
-                                {...register('contrasenya',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^(?=.*[a-zA-Z])(?=.*\d).{5,10}$/,
-                                        message: "Tu contraseña no es correcta"
-                                    },
-                                })}
-                                />  
-                                {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>} 
-                                <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
+                                <InputContainer>
+                                    <SInput type='text' placeholder="Email" autoComplete="off"
+                                    {...register('email',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                            message: "Tu email no es correcto"
+                                        },
+                                    })}
+                                    />
+                                    {errors.email && <SError>{errors.email.message as string}</SError>}
+                                </InputContainer>
+                                <InputContainer>
+                                    <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
+                                    {...register('contrasenya',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
+                                            message: "Minus. y mayus. con simbolos y longitud minima 5"
+                                        },
+                                    })}
+                                    />  
+                                    {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>} 
+                                    <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
+                                </InputContainer>
                             </SForm>
                             <SButtonsContainer>
                                 <SButton onClick={handleSubmit(onSubmit)}>Iniciar Sesión</SButton>
@@ -219,6 +229,7 @@ const SPasswordToggle = styled(Image)`
     height: 1.875rem;
     position: absolute;
     right: 0;
+    top: 235px;
     margin-top: 0.625rem;
     margin-top: 7.625rem;
     margin-right: 4.063rem;
@@ -247,6 +258,11 @@ const SButtonsContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+`
+
+const InputContainer = styled.div`
+    display: flex;
+    flex-direction: column; 
 `
 
 export default Login

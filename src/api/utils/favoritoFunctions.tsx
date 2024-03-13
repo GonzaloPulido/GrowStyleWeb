@@ -6,15 +6,6 @@ interface Favorito {
     id_producto: number;
   }
 
-/* export const fetchAllFavorites = async () => {
-    try {
-      const favs = await getAllFavoritos();
-      console.log('Todos los favoritos:', favs);
-    } catch (error) {
-      console.error('Error al obtener todos los favoritos:', error);
-    }
-}; */
-
 export const fetchFavoriteByUserId = async (id: number) => {
     try {
       const favs = await getFavoritosByUserId(id);

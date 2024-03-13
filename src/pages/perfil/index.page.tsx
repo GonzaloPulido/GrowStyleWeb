@@ -18,14 +18,9 @@ import useAuthStore from '../../store/loginStore'
 const Perfil = () => {
   const [selected, setSelected] = useState(1)
   const checkLogin = useAuthStore.getState().isLogged;
-  const usuarioLogueado = useAuthStore.getState().loggedUser
-  const userName = usuarioLogueado?.nombre
-  console.log(userName);
-  console.log(usuarioLogueado);
   
   
   useEffect(() => {
-    console.log(checkLogin);
     if (!checkLogin){
       router.push('/')
     }

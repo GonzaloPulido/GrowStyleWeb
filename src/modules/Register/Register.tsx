@@ -66,13 +66,12 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
                 const myUser = {nombre: nombre, apellidos: apellidos, telefono:telefono, email:email, contrasenya:contrasenya}
                 fetchCreateUsuario(myUser)
                 useAuthStore.getState().login(myUser);
-                /* Añadir tiempo antes de que se cierre el componente
                 customToast(`Bienvenido ${myUser.nombre}`, {
                     type: "success",
                     position: "top-left",
                     autoClose: 3000,
                     theme: "colored",
-                }); */
+                });
                 onCloseLogin()
                 onClose()
                 router.push("/")
@@ -94,64 +93,76 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
                             <STitle>Registrate</STitle>
                             <SDescription>Regístrate y no te pierdas ninguna promoción</SDescription>
                             <SForm>
-                                <SInput type="text" placeholder="Nombre" autoComplete="off"
-                                {...register('nombre',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
-                                        message: "Letras, longitud 3 a 15"
-                                    },
-                                })}
-                                />
-                                {errors.nombre && <SError>{errors.nombre.message as string}</SError>}
-                                <SInput type="text" placeholder="Apellidos" autoComplete="off"
-                                {...register('apellidos',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
-                                        message: "Letras, longitud 3 a 15"
-                                    },
-                                })}
-                                />
-                                {errors.apellidos && <SError>{errors.apellidos.message as string}</SError>}  
-                                <SInput type="text" placeholder="Telefono" autoComplete="off"
-                                {...register('telefono',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^\+?[0-9\s-]+$/ ,
-                                        message: "Formato de telefono no valido"
-                                    },
-                                })}
-                                />  
-                                {errors.telefono && <SError>{errors.telefono.message as string}</SError>} 
-                                <SInput type='text' placeholder="Email" autoComplete="off"
-                                {...register('email',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                        message: "Formato de email incorrecto"
-                                    },
-                                })}
-                                /> 
-                                {errors.email && <SError>{errors.email.message as string}</SError>}
-                                <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
-                                {...register('contrasenya',{
-                                    required: "Este campo es obligatorio",
-                                    pattern: {
-                                        value: /^(?=.*[a-zA-Z])(?=.*\d).{5,10}$/,
-                                        message: "Minus. y mayus. con simbolos y longitud 5 a 10"
-                                    },
-                                })}
-                                />   
-                                {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>}
-                                <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Repetir Contraseña" autoComplete="off"
-                                {...register('checkPassword', {
-                                    required: "Este campo es obligatorio",
-                                    validate: value => value === getValues('contrasenya') || "Las contraseñas no coinciden"
-                                })}
-                                />
-                                {errors.checkPassword && <SError>{errors.checkPassword.message as string}</SError>}
-                                <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
+                                <InputContainer>
+                                    <SInput type="text" placeholder="Nombre" autoComplete="off"
+                                    {...register('nombre',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
+                                            message: "Letras, longitud 3 a 15"
+                                        },
+                                    })}
+                                    />
+                                    {errors.nombre && <SError>{errors.nombre.message as string}</SError>}
+                                </InputContainer>
+                                <InputContainer>
+                                    <SInput type="text" placeholder="Apellidos" autoComplete="off"
+                                    {...register('apellidos',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
+                                            message: "Letras, longitud 3 a 15"
+                                        },
+                                    })}
+                                    />
+                                    {errors.apellidos && <SError>{errors.apellidos.message as string}</SError>} 
+                                </InputContainer>
+                                <InputContainer>
+                                    <SInput type="text" placeholder="Telefono" autoComplete="off"
+                                    {...register('telefono',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^(?:\d{3}\s?\d{3}\s?\d{3}|34\s?\d{3}\s?\d{3}\s?\d{3})$/,
+                                            message: "Formato de telefono no valido"
+                                        },
+                                    })}
+                                    />  
+                                    {errors.telefono && <SError>{errors.telefono.message as string}</SError>} 
+                                </InputContainer>
+                                <InputContainer>
+                                    <SInput type='text' placeholder="Email" autoComplete="off"
+                                    {...register('email',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                            message: "Formato de email incorrecto"
+                                        },
+                                    })}
+                                    /> 
+                                    {errors.email && <SError>{errors.email.message as string}</SError>}
+                                </InputContainer>
+                                <InputContainer>
+                                    <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
+                                    {...register('contrasenya',{
+                                        required: "Este campo es obligatorio",
+                                        pattern: {
+                                            value: /^(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
+                                            message: "Minus. y mayus. con simbolos y longitud minima 5"
+                                        },
+                                    })}
+                                    />   
+                                    {errors.contrasenya && <SError>{errors.contrasenya.message as string}</SError>}
+                                </InputContainer>
+                                <InputContainer>
+                                    <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Repetir Contraseña" autoComplete="off"
+                                    {...register('checkPassword', {
+                                        required: "Este campo es obligatorio",
+                                        validate: value => value === getValues('contrasenya') || "Las contraseñas no coinciden"
+                                    })}
+                                    />
+                                    {errors.checkPassword && <SError>{errors.checkPassword.message as string}</SError>}
+                                    <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
+                                </InputContainer>
                             </SForm>
                             <SButton onClick={handleSubmit(onSubmit)}>Crear Cuenta</SButton>
                         </SPopUpContainer>
@@ -245,6 +256,7 @@ const SPasswordToggle = styled(Image)`
     height: 1.875rem;
     position: absolute;
     right: 0;
+    top: 245px;
     margin-top: 25.625rem;
     margin-right: 4.063rem;
     cursor: pointer;
@@ -265,6 +277,10 @@ const SError = styled.span`
     height: 0px;
     color: ${COLORS.darkRed};
     font-size: 15px;
+`
+const InputContainer = styled.div`
+    display: flex;
+    flex-direction: column; 
 `
 
 export default Login

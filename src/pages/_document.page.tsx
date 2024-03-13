@@ -15,6 +15,7 @@ export default class MyDocument extends Document{
           <div id='register'></div>
           <div id='favoritos'></div>
           <div id='cart'></div>
+          <div id='popup'></div>
         <NextScript />
       </body>
       </Html>

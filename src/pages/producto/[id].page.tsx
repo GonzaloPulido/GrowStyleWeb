@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout';
 import styled from 'styled-components';
 import Image from 'next/image';
@@ -8,13 +8,66 @@ import fav from "../../../public/icons/heartIcon.svg"
 import {Nunito } from "next/font/google"
 export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
 import cart from "../../../public/icons/basketIcon.svg"
+import { fetchProductById } from '../../api/utils/productoFunctions';
+import { base64topng } from '../../functions/generalFunctions';
+import defaultImage from '../../../public/icons/default.png'
+
+interface Producto {
+  id: number;
+  nombre: string;
+  precio: number;
+  precio_descuento: number;
+  color: string;
+  imagen: string;
+  talla_xs: number;
+  talla_s: number;
+  talla_m: number;
+  talla_l: number;
+  talla_xl: number;
+  talla_xxl: number;
+}
 
 const Producto = () => {
-    const myProduct = {id: 1, nombre : "Camiseta Roja" , color: "rojo", talla: "M", precio: 10, descuento: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"}
     const router = useRouter()
-    const {id}:any = router.query;
+    const [product, setProduct] = useState<Producto>();
+    const [imageSrc, setImageSrc] = useState('')
+    const {id} = router.query;
     const [size, setSize] = useState(0)
-    
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const data = await fetchProductById(id as unknown as number)
+          if (data) {
+            setProduct(data);
+          } else {
+            console.error('Error: Datos de productos no válidos.');
+          }
+        } catch (error) {
+          console.error('Error fetching productos:', error);
+        }
+      };
+  
+      fetchData();
+    }, [id]);
+
+    useEffect(() => {
+      const fetchImage = async () => {
+        try {
+          if(product?.imagen) {
+            const img = await base64topng(product?.imagen);
+            setImageSrc(img);
+          }
+        } catch (error) {
+          console.error('Error al cargar la imagen:', error);
+        }
+      };
+  
+      if (product) {
+        fetchImage();
+      }
+    }, [product?.imagen]);
+
     const selectSize = (selectedSize: number) => {
       if (selectedSize === 1) {
           if (size === 1) {
@@ -58,25 +111,25 @@ const Producto = () => {
   return (
     <SProductoContainer>
       <SLeft>
-        <SProductImage src={myProduct.imagen} alt='' width={0} height={0}/>
+        <SProductImage src={ imageSrc ? imageSrc :  defaultImage.src} alt='' width={0} height={0}/>
       </SLeft>
       <SRight>
         <SNombreFavContainer>
-          <SNombre>{myProduct.nombre}</SNombre>
-          <SFavIcon src={fav} alt=''/>
+          <SNombre>{product?.nombre}</SNombre>
+          <SFavIcon src={fav} alt=''/> 
         </SNombreFavContainer>
         <SPricesContainer>
-          <SDiscountPrice>{myProduct.precio}€</SDiscountPrice>
-          <SPrice>{myProduct.descuento}€</SPrice>
-          <SColor id={myProduct.color}></SColor>
+          {!product?.precio_descuento &&<SDiscountPrice>{product?.precio_descuento}€</SDiscountPrice>}
+          <SPrice className={!product?.precio_descuento ? "noprice" : ""}>{product?.precio}€</SPrice>
+          <SColor id={product?.color}></SColor>
         </SPricesContainer>
         <SSizeSelector>
-          <SSizeOption onClick={() => selectSize(1)} className={size == 1 ? "selected" : ""}>XS</SSizeOption>
-          <SSizeOption onClick={() => selectSize(2)} className={size == 2 ? "selected" : ""}>S</SSizeOption>
-          <SSizeOption onClick={() => selectSize(3)} className={size == 3 ? "selected" : ""}>M</SSizeOption>
-          <SSizeOption onClick={() => selectSize(4)} className={size == 4 ? "selected" : ""}>L</SSizeOption>
-          <SSizeOption onClick={() => selectSize(5)} className={size == 5 ? "selected" : ""}>XL</SSizeOption>
-          <SSizeOption onClick={() => selectSize(6)} className={size == 6 ? "selected" : ""}>XXL</SSizeOption>
+          <SSizeOption onClick={() => selectSize(1)} className={size == 1 ? "selected" : ""} disabled={product?.talla_xs ? false : true}>XS</SSizeOption>
+          <SSizeOption onClick={() => selectSize(2)} className={size == 2 ? "selected" : ""} disabled={product?.talla_s ? false : true}>S</SSizeOption>
+          <SSizeOption onClick={() => selectSize(3)} className={size == 3 ? "selected" : ""} disabled={product?.talla_m ? false : true}>M</SSizeOption>
+          <SSizeOption onClick={() => selectSize(4)} className={size == 4 ? "selected" : ""} disabled={product?.talla_l ? false : true}>L</SSizeOption>
+          <SSizeOption onClick={() => selectSize(5)} className={size == 5 ? "selected" : ""} disabled={product?.talla_xl ? false : true}>XL</SSizeOption>
+          <SSizeOption onClick={() => selectSize(6)} className={size == 6 ? "selected" : ""} disabled={product?.talla_xxl ? false : true}>XXL</SSizeOption>
       </SSizeSelector>
       <SButton>
         <SCartIcon src={cart} alt=''/>
@@ -122,6 +175,8 @@ const SNombreFavContainer = styled.div`
 `
 
 const SNombre = styled.h2`
+  width: 100%;
+  text-align: center;
   font-size: 40px;
   color: ${COLORS.black};
 `
@@ -145,27 +200,37 @@ const SDiscountPrice =styled.h2`
 
 const SPrice =styled.h2`
   font-size: 40px;
-  text-decoration: line-through;
+  &.noprice {
+    text-decoration: line-through;
+  }
 `
 
 const SColor = styled.div`
   width: 80px;
   height: 25px;
-  &#rojo{
+  &#Rojo{
       border: 2px solid ${COLORS.black};
       background-color: red;
   }
-  &#azul{
+  &#Azul{
       border: 2px solid ${COLORS.black};
       background-color: blue;
   }
-  &#negro{
+  &#Negro{
       border: 2px solid ${COLORS.gray};
       background-color: black;
   }
-  &#verde{
+  &#Verde{
       border: 2px solid ${COLORS.black};
       background-color: green;
+  }
+  &#Marron{
+      border: 2px solid ${COLORS.black};
+      background-color: brown;
+  }
+  &#Blanco{
+      border: 2px solid ${COLORS.gray};
+      background-color: white;
   }
 `
 
@@ -174,7 +239,9 @@ const SSizeSelector = styled.div`
   justify-content: space-between;
 `
 
-const SSizeOption = styled.h2`
+const SSizeOption = styled.button`
+    border: 0;
+    background-color: ${COLORS.green};
     font-size: 40px;
     cursor: pointer;
     &.selected{

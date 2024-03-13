@@ -26,7 +26,6 @@ const IndexPage: NextPageWithLayout = () => {
         </SVideo>
         <SLogoImage src={logo.src} alt='' width="0" height="0" onClick={() => router.push("/")}/>
       </SVideoContainer>
-      {/* <SSalesImage src={sales.src} alt='' width="0" height="0" onClick={() => router.push("/catalogo")}/> */}
       
       <SDescription>"En GrowStyle, creemos en el poder transformador del crecimiento personal y el estilo auténtico. 
         Somos una tienda dedicada a ofrecer camisetas y sudaderas que reflejan esta filosofía única. 
@@ -95,7 +94,6 @@ const SVideoContainer = styled.div`
   flex-direction: column;
   width: 60%;
   height: 60%;
-  display: flex;
   justify-content: center;
   @media (max-width: 1550px) {
     width: 1000px;

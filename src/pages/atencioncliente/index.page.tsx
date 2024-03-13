@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
@@ -8,20 +8,21 @@ import router from 'next/router'
 
 const AtencionCliente = () => {
   const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+  const [errorAlertShown, setErrorAlertShown] = useState(false)
 
   useEffect(() => {
-      if (errors.nombre != null || errors.apellidos != null || errors.email != null || 
-          errors.comentario != null) {
-          customToast("Credenciales incorrectas", {
-              type: "error",
-              position: "top-left",
-              //toastId: "" 
-              autoClose: 3000,
-              theme: "colored",
-          })
-      }
-
-  }, [errors.nombre, errors.apellidos, errors.email, errors.comentario])
+    if ((errors.nombre || errors.apellidos || errors.email || errors.comentario) && !errorAlertShown) {
+        customToast("Debes rellenar el formulario", {
+            type: "error",
+            position: "top-left",
+            autoClose: 3000,
+            theme: "colored",
+        });
+        setErrorAlertShown(true);
+    } else if (!errors.nombre && !errors.apellidos && !errors.email && !errors.comentario) {
+        setErrorAlertShown(false);
+    }
+}, [errors.nombre, errors.apellidos, errors.email, errors.comentario, errorAlertShown]);
 
   const redirect = () => {
     router.push("/")
@@ -40,7 +41,6 @@ const AtencionCliente = () => {
 
   }
 
-
   return (
     <SContactoContainer>
       <SUpContainer>
@@ -49,49 +49,60 @@ const AtencionCliente = () => {
       </SUpContainer>
       <SForm>
         <SBlock1>
-          <SInput type='text' placeholder="Nombre" autoComplete="off"
+        <InputContainer>
+          <SInput type="text" placeholder="Nombre" autoComplete="off"
           {...register('nombre',{
               required: "Este campo es obligatorio",
               pattern: {
-                value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
-                message: "Formato de nombre incorrecto"
+                  value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
+                  message: "Letras, longitud 3 a 15"
               },
           })}
           />
-          <SInput type='text' placeholder="Apellidos" autoComplete="off"
+          {errors.nombre && <SError>{errors.nombre.message as string}</SError>}
+        </InputContainer>
+        <InputContainer>
+          <SInput type="text" placeholder="Apellidos" autoComplete="off"
           {...register('apellidos',{
               required: "Este campo es obligatorio",
               pattern: {
-                value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
-                message: "Formato de apellidos incorrecto"
+                  value: /^[A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}( [A-Za-zÁÉÍÓÚáéíóúüÜ]{3,15}){0,1}$/,
+                  message: "Letras, longitud 3 a 15"
               },
           })}
-          />  
+          />
+          {errors.apellidos && <SError>{errors.apellidos.message as string}</SError>} 
+        </InputContainer>
         </SBlock1>
-        
-        <SInput type='text' placeholder="Email" autoComplete="off"
-        {...register('email',{
+        <InputContainer>
+          <SInput type='text' placeholder="Email" autoComplete="off"
+          {...register('email',{
+              required: "Este campo es obligatorio",
+              pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Formato de email incorrecto"
+              },
+          })}
+          /> 
+          {errors.email && <SError>{errors.email.message as string}</SError>}
+        </InputContainer> 
+        <InputContainer>
+          <STextArea
+          id="nombre"
+          placeholder="Escribe aqui tu incidencia"
+          autoComplete="off"
+          {...register('comentario', {
             required: "Este campo es obligatorio",
             pattern: {
-              value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-              message: "Tu email no es correcto"
+              value: /^(?:(?![ ]{2,})[a-zA-Z0-9.,; ])*(?:[.](?![. ])|[;](?![; ])|[ ](?![ ]|$))*$/,
+              message: "Formato de comentario no válido",
             },
-        })}
-        />  
-        <STextArea
-        id="nombre"
-        placeholder="Escribe aqui tu incidencia"
-        autoComplete="off"
-        {...register('comentario', {
-          required: "Este campo es obligatorio",
-          pattern: {
-            value: /^(?:(?![ ]{2,})[a-zA-Z0-9.,; ])*(?:[.](?![. ])|[;](?![; ])|[ ](?![ ]|$))*$/,
-            message: "Formato de comentario no válido",
-          },
-        })}
-        rows={7}
-        cols={50}
-      />
+          })}
+          rows={5}
+          cols={50}
+          />
+          {errors.comentario && <SError>{errors.comentario.message as string}</SError>}
+        </InputContainer>
     </SForm>
     <SButton onClick={handleSubmit(onSubmit)}>Enviar</SButton>
     </SContactoContainer>
@@ -187,6 +198,17 @@ const STextArea = styled.textarea`
       outline: none;
   }
   resize: none;
+`
+
+const SError = styled.span`
+    height: 0px;
+    color: ${COLORS.darkRed};
+    font-size: 15px;
+`
+
+const InputContainer = styled.div`
+    display: flex;
+    flex-direction: column; 
 `
 
 
