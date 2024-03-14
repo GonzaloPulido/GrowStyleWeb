@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from 'axios';
 const API_URL = 'http://localhost:3001';
 
 interface User {
+  id?: any;
   rol?: string;
   nombre: string;
   apellidos: string;

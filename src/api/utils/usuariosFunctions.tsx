@@ -1,6 +1,7 @@
 import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from "../services/usuariosServices";
 
 interface User {
+    id?:number
     rol?: string;
     nombre: string;
     apellidos: string;
@@ -27,6 +28,7 @@ export const fetchAllUsuarios = async () => {
 export const fetchUserById = async (id: number) => {
     try {
       const user = await getUserById(id);
+      return user
       //console.log('Usuario by Id:', user);
     } catch (error) {
       console.error('Error al obtener el usuario:', error);
