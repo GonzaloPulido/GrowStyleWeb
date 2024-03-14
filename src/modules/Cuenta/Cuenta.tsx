@@ -54,6 +54,7 @@ const Cuenta = () => {
                 codigo_postal: usuarioLogueado.codigo_postal, provincia: usuarioLogueado.provincia}
             const id = usuarioLogueado?.id
             fetchUpdateUsuario(id, myUser)
+            useAuthStore.getState().update(myUser)
             customToast("Usuario Actualizado", {
                 type: "success",
                 position: "top-left",

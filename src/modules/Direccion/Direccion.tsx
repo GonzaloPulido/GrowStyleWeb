@@ -11,6 +11,7 @@ const Direccion = () => {
     const usuarioLogueado = useAuthStore.getState().loggedUser
     const checkLogged = useAuthStore.getState().isLogged
     const [loggedUserId, setLoggedUserId] = useState(0)
+    console.log(usuarioLogueado);
 
     useEffect( () => {
         if (checkLogged) {
@@ -30,8 +31,8 @@ const Direccion = () => {
           fetchUsuario();
         }
       }, []);
-
-      const onSubmit = async (data: FieldValues) => {
+      
+    const onSubmit = async (data: FieldValues) => {
         try{
             const {direccion,informacion,codigoPostal,ciudad,provincia} = data
             const objetoActualizar = {
@@ -48,6 +49,7 @@ const Direccion = () => {
                 provincia: provincia,
             }
             fetchUpdateUsuario(loggedUserId,objetoActualizar)
+            useAuthStore.getState().update(objetoActualizar)
             customToast("Direccion actualizada", {
                 type: "success",
                 position: "top-left",

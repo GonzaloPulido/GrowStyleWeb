@@ -21,6 +21,7 @@ interface AuthState {
   isLogged: boolean;
   login: (user: User) => void;
   logout: () => void;
+  update: (user: User) => void;
 }
 
 const useAuthStore = create<AuthState>((set) => {
@@ -39,6 +40,13 @@ const useAuthStore = create<AuthState>((set) => {
     logout: () => {
       set({ loggedUser: null, isLogged: false });
       Cookies.remove('loggedUser');
+    },
+    update: (user: User) => {
+      set((state) => {
+          const updatedUser = { ...state.loggedUser, ...user };
+          Cookies.set('loggedUser', JSON.stringify(updatedUser), { expires: 7 });
+          return { loggedUser: updatedUser, isLogged: true };
+      });
     },
   };
 });
