@@ -35,9 +35,10 @@ export const fetchUserById = async (id: number) => {
     }
 };
 
-export const fetchCreateUsuario = async (usuario: User) => {
+export const fetchCreateUsuario = async (usuario: any) => {
     try {
       const user = await createUser(usuario);
+      return user
       //console.log('Usuario creado correctamente:', user);
     } catch (error) {
       console.error('Error al crear pedido:', error);

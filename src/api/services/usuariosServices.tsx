@@ -17,6 +17,21 @@ interface User {
   provincia?: string;
 }
 
+interface UsuarioResponse {
+  id?: any;
+  rol?: string;
+  nombre: string;
+  apellidos: string;
+  telefono: string;
+  email: string;
+  contrasenya: string;
+  calle?: string;
+  numero?: string;
+  ciudad?: string;
+  codigo_postal?: string;
+  provincia?: string;
+}
+
 export const getAllUsers = async (): Promise<User[]> => {
   try {
     const response: AxiosResponse<User[]> = await axios.get(`${API_URL}/usuarios`);
@@ -37,9 +52,10 @@ export const getUserById = async (userId: number): Promise<User> => {
   }
 };
 
-export const createUser = async (userData: User): Promise<void> => {
+export const createUser = async (userData: User): Promise<UsuarioResponse> => {
   try {
-    await axios.post(`${API_URL}/usuarios/create`, userData);
+    const response : AxiosResponse<UsuarioResponse> = await axios.post(`${API_URL}/usuarios/create`, userData);
+    return response.data
   } catch (error) {
     console.error('Error al crear usuario:', error);
     throw error;

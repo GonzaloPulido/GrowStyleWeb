@@ -9,7 +9,7 @@ import closedEye from "../../../public/icons/closedEyeIcon.svg"
 import { useEffect, useState } from "react"
 import { FieldValues, useForm } from "react-hook-form"
 import { customToast } from "../../share/notifications"
-import { fetchAllUsuarios, fetchCreateUsuario } from "../../api/utils/usuariosFunctions"
+import { fetchAllUsuarios, fetchCreateUsuario, fetchUserById } from "../../api/utils/usuariosFunctions"
 import useAuthStore from "../../store/loginStore"
 
 
@@ -64,8 +64,12 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
                 }
             }else {
                 const myUser = {nombre: nombre, apellidos: apellidos, telefono:telefono, email:email, contrasenya:contrasenya}
-                fetchCreateUsuario(myUser)
-                useAuthStore.getState().login(myUser);
+                const createdUserId = await fetchCreateUsuario(myUser)
+                const createdUser = await fetchUserById(createdUserId?.id)
+                if (createdUser){
+                    useAuthStore.getState().login(createdUser);
+                }
+                
                 customToast(`Bienvenido ${myUser.nombre}`, {
                     type: "success",
                     position: "top-left",
