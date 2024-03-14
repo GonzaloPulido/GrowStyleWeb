@@ -7,21 +7,34 @@ import noFav from '../../../public/icons/noHeartIcon.svg'
 import { useRouter } from 'next/router'
 import { base64topng } from '../../functions/generalFunctions'
 import defaultImage from '../../../public/icons/default.png'
+import useAuthStore from '../../store/loginStore'
+import { customToast } from '../../share/notifications'
+import { fetchCreateFavorite, fetchDeleteFavorite, fetchFavoriteByUserId } from '../../api/utils/favoritoFunctions'
 
 interface ProductoListadoProps {
-    id: number;
+    id: number,
     imagen: string,
     nombre: string,
     precioDescuento: number,
     precio: number,
     isFav: boolean,
-    
-
+    favId: any
 }
 
-const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,precioDescuento,precio,isFav}) => {
+interface Favorito {
+    id?: number
+    id_usuario: number;
+    id_producto: number;
+  }
+
+const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,precioDescuento,precio,isFav,favId}) => {
     const router = useRouter();
     const [imageSrc, setImageSrc] = useState('')
+    const checkLogged = useAuthStore.getState().isLogged
+    const myUser = useAuthStore.getState().loggedUser
+    const [errorAlertShown, setErrorAlertShown] = useState(false)
+    const [favIcon, setFavIcon] = useState(isFav)
+    const [idFav, setIdFav] = useState(favId)
     
     const handleImageClick = () => {
         router.push(`/producto/${id}`);
@@ -36,12 +49,58 @@ const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,preci
             console.error('Error al cargar la imagen:', error);
           }
         };
-    
         fetchImage();
-      }, []);
+    }, []);
 
-
-    
+    const AddDeleteFavorite = async () => {
+    if (checkLogged){
+        if(favIcon){
+            if(idFav) {
+                setFavIcon(false)
+                await fetchDeleteFavorite(idFav)
+                setFavIcon(!favIcon)
+                setIdFav(0)
+                if (!errorAlertShown) {
+                    customToast("Producto eliminado de favoritos", {
+                        type: "success",
+                        position: "top-left",
+                        autoClose: 3000,
+                        theme: "colored",
+                    });
+                    setErrorAlertShown(true);
+                }
+                setErrorAlertShown(false);
+                return
+            }
+        }else if (!favIcon){
+        const myFavorito = {id_usuario: myUser.id, id_producto: id}
+        const myResponse = await fetchCreateFavorite(myFavorito)
+        setIdFav(myResponse?.id)
+        setFavIcon(true)
+        if (!errorAlertShown) {
+            customToast("Producto añadido a favoritos", {
+                type: "success",
+                position: "top-left",
+                autoClose: 3000,
+                theme: "colored",
+            });
+            setErrorAlertShown(true);
+        } 
+        setErrorAlertShown(false);
+        return
+        }
+    }else{
+        if (!errorAlertShown) {
+        customToast("Debes estar logueado", {
+            type: "error",
+            position: "top-left",
+            autoClose: 3000,
+            theme: "colored",
+        });
+        setErrorAlertShown(true);
+    }setErrorAlertShown(false);
+    }
+    }
 
   return (
     <SProductoContainer>
@@ -50,12 +109,12 @@ const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,preci
             <SLeftContainer>
                 <SName>{nombre}</SName>
                 <SPrices>
-                    <SDiscountPrice>{precioDescuento}€</SDiscountPrice>
-                    <SPrice>{precio}€</SPrice>
+                    {precioDescuento > 0  && <SDiscountPrice>{precioDescuento}€</SDiscountPrice>}
+                    <SPrice className={ precioDescuento > 0 ? "noprice" : ""}>{precio}€</SPrice>
                 </SPrices>
             </SLeftContainer>
             <SRightContainer>
-                <SFavIcon src={isFav ? fav : noFav} alt=''/>
+                <SFavIcon src={favIcon ? fav : noFav} alt='' onClick={() => AddDeleteFavorite()}/>
             </SRightContainer>
         </SInformacion>
     </SProductoContainer>
@@ -114,13 +173,16 @@ const SDiscountPrice = styled.h2`
 
 const SPrice = styled.h2`
     font-size: 25px;
+    &.noprice {
     text-decoration: line-through;
+    }
 `
 
 const SFavIcon = styled(Image)`
     width: 30px;
     height: 30px;
     margin-right: 15px;
+    cursor: pointer;
 `
 
 export default ProductoListado

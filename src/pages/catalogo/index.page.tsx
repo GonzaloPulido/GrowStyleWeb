@@ -7,6 +7,8 @@ import filter from '../../../public/icons/filterIcon.svg'
 import Filtros from '../../modules/Filtros/Filtros'
 import ProductoListado from '../../modules/ProductoListado/ProductoListado'
 import { fetchAllProductos } from '../../api/utils/productoFunctions'
+import { fetchFavoriteByUserId } from '../../api/utils/favoritoFunctions'
+import useAuthStore from '../../store/loginStore'
 
 interface Producto {
   id: number;
@@ -23,11 +25,35 @@ interface Producto {
   talla_xxl: number;
 }
 
+interface Favorito {
+  id: number;
+  id_usuario: number;
+  id_producto: number;
+}
+
 const Catalogo = () => {
   const [filters, setFilters] = useState(false)
   const [productos, setProductos] = useState<Producto[]>([]);
+  const [favoritos, setFavoritos] = useState<Favorito[]>()
+  const myUser = useAuthStore.getState().loggedUser
+  const checkLogged = useAuthStore.getState().isLogged
   
   useEffect(() => {
+    if (checkLogged) {
+        const fetchFavoritos = async () => {
+          try {
+            const data = await fetchFavoriteByUserId(myUser.id);
+            if (data && Array.isArray(data)) {
+              setFavoritos(data);
+            } else {
+              console.error('Error: Datos de productos no válidos.');
+            }
+          } catch (error) {
+            console.error('Error fetching productos:', error);
+          }
+        };
+        fetchFavoritos();
+    }
     const fetchData = async () => {
       try {
         const data = await fetchAllProductos();
@@ -54,8 +80,10 @@ const Catalogo = () => {
       <SBlock2>
       {productos.map( (prod)=>{
         const { id, nombre, precio, precio_descuento, imagen  } = prod;
+        const favorito: any = favoritos?.find(fav => fav.id_producto === id && fav.id_usuario === myUser.id);
+        
         return(
-            <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={precio_descuento} precio={precio} isFav={false}></ProductoListado>
+            <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={precio_descuento} precio={precio} isFav={favorito} favId={favorito ? favorito.id : 0}></ProductoListado>
         )
       })}
       </SBlock2>

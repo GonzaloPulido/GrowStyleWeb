@@ -28,9 +28,16 @@ export const getFavoritosByUserId = async (userId: number): Promise<Favorito[]> 
   }
 };
 
-export const createFavorito = async (favoritoData: Favorito): Promise<void> => {
+interface FavoritoResponse {
+  message: string,
+  id: string
+}
+
+export const createFavorito = async (favoritoData: Favorito): Promise<FavoritoResponse> => {
   try {
-    await axios.post(`${API_URL}/favorito/create`, favoritoData);
+    const response : AxiosResponse<FavoritoResponse> = await axios.post(`${API_URL}/favorito/create`, favoritoData);
+    return response.data
+    
   } catch (error) {
     console.error('Error al crear favorito:', error);
     throw error;

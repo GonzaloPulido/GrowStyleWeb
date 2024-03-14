@@ -5,12 +5,16 @@ import styled from 'styled-components';
 import Image from 'next/image';
 import { COLORS } from '../../share/colors';
 import fav from "../../../public/icons/heartIcon.svg"
+import noFav from "../../../public/icons/noHeartIcon.svg"
 import {Nunito } from "next/font/google"
 export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
 import cart from "../../../public/icons/basketIcon.svg"
 import { fetchProductById } from '../../api/utils/productoFunctions';
 import { base64topng } from '../../functions/generalFunctions';
-import defaultImage from '../../../public/icons/default.png'
+import defaultImage from '../../../public/icons/default.png';
+import useAuthStore from '../../store/loginStore';
+import { fetchCreateFavorite, fetchDeleteFavorite, fetchFavoriteByUserId } from '../../api/utils/favoritoFunctions';
+import { customToast } from '../../share/notifications';
 
 interface Producto {
   id: number;
@@ -27,12 +31,27 @@ interface Producto {
   talla_xxl: number;
 }
 
+interface Favorito {
+  id: number;
+  id_usuario: number;
+  id_producto: number;
+}
+
 const Producto = () => {
     const router = useRouter()
+    const [errorAlertShown, setErrorAlertShown] = useState(false)
     const [product, setProduct] = useState<Producto>();
     const [imageSrc, setImageSrc] = useState('')
     const {id} = router.query;
     const [size, setSize] = useState(0)
+    const [favoritos, setFavoritos] = useState<Favorito[]>()
+    const checkLogged = useAuthStore.getState().isLogged
+    const myUser = useAuthStore.getState().loggedUser
+    const favorito: any = favoritos?.find(fav => fav.id_producto === product?.id && fav.id_usuario === myUser.id);
+    const [favIcon, setFavIcon] = useState(favorito)
+    const [idFav, setIdFav] = useState(favorito ? favorito.id : 0)
+
+
 
     useEffect(() => {
       const fetchData = async () => {
@@ -50,6 +69,30 @@ const Producto = () => {
   
       fetchData();
     }, [id]);
+
+    useEffect(() => {
+      setFavIcon(favorito)
+      setIdFav(favorito ? favorito.id : 0)
+    }, [favorito])
+    
+
+    useEffect(() => {
+      if (checkLogged) {
+        const fetchFavoritos = async () => {
+          try {
+            const data = await fetchFavoriteByUserId(myUser.id);
+            if (data && Array.isArray(data)) {
+              setFavoritos(data);
+            } else {
+              console.error('Error: Datos de productos no válidos.');
+            }
+          } catch (error) {
+            console.error('Error fetching productos:', error);
+          }
+        };
+        fetchFavoritos();
+      }
+    }, []);
 
     useEffect(() => {
       const fetchImage = async () => {
@@ -107,6 +150,56 @@ const Producto = () => {
           }
       }
   }
+
+  const AddDeleteFavorite = async () => {
+    if (checkLogged){
+        if(favIcon){
+            if(idFav) {
+                setFavIcon(false)
+                await fetchDeleteFavorite(idFav)
+                setFavIcon(!favIcon)
+                setIdFav(0)
+                if (!errorAlertShown) {
+                    customToast("Producto eliminado de favoritos", {
+                        type: "success",
+                        position: "top-left",
+                        autoClose: 3000,
+                        theme: "colored",
+                    });
+                    setErrorAlertShown(true);
+                }
+                setErrorAlertShown(false);
+                return
+            }
+        }else if (!favIcon){
+        const myFavorito = {id_usuario: myUser.id, id_producto: id}
+        const myResponse = await fetchCreateFavorite(myFavorito)
+        setIdFav(myResponse?.id)
+        setFavIcon(true)
+        if (!errorAlertShown) {
+            customToast("Producto añadido a favoritos", {
+                type: "success",
+                position: "top-left",
+                autoClose: 3000,
+                theme: "colored",
+            });
+            setErrorAlertShown(true);
+        } 
+        setErrorAlertShown(false);
+        return
+        }
+    }else{
+        if (!errorAlertShown) {
+        customToast("Debes estar logueado", {
+            type: "error",
+            position: "top-left",
+            autoClose: 3000,
+            theme: "colored",
+        });
+        setErrorAlertShown(true);
+    }setErrorAlertShown(false);
+    }
+    }
     
   return (
     <SProductoContainer>
@@ -116,7 +209,7 @@ const Producto = () => {
       <SRight>
         <SNombreFavContainer>
           <SNombre>{product?.nombre}</SNombre>
-          <SFavIcon src={fav} alt=''/> 
+          <SFavIcon src={favIcon ? fav : noFav} alt='' onClick={() => AddDeleteFavorite()}/> 
         </SNombreFavContainer>
         <SPricesContainer>
           {!product?.precio_descuento &&<SDiscountPrice>{product?.precio_descuento}€</SDiscountPrice>}
@@ -184,6 +277,7 @@ const SNombre = styled.h2`
 const SFavIcon = styled(Image)`
   width: 30px;
   height: 30px;
+  cursor: pointer;
 `
 
 const SPricesContainer = styled.div`

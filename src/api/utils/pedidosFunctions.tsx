@@ -10,7 +10,7 @@ interface Pedido {
 export const fetchAllPedidos = async () => {
     try {
       const favs = await getAllPedidos();
-      console.log('Todos los pedidos:', favs);
+      //console.log('Todos los pedidos:', favs);
     } catch (error) {
       console.error('Error al obtener todos los pedidos:', error);
     }
@@ -19,7 +19,7 @@ export const fetchAllPedidos = async () => {
 export const fetchPedidoByUserId = async (id: number) => {
     try {
       const favs = await getPedidosByUserId(id);
-      console.log('Pedido by UserId:', favs);
+      //console.log('Pedido by UserId:', favs);
     } catch (error) {
       console.error('Error al obtener el pedido:', error);
     }
@@ -28,7 +28,7 @@ export const fetchPedidoByUserId = async (id: number) => {
 export const fetchCreatePedido = async (pedido: Pedido) => {
     try {
       const favs = await createPedido(pedido);
-      console.log('Pedido creado correctamente:', favs);
+      //console.log('Pedido creado correctamente:', favs);
     } catch (error) {
       console.error('Error al crear pedido:', error);
     }

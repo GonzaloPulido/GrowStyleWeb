@@ -19,7 +19,7 @@ export const fetchAllProductos = async () => {
     try {
       const prod = await getAllProducts();
       return prod
-      console.log('Todos los productos:', prod);
+      //console.log('Todos los productos:', prod);
     } catch (error) {
       console.error('Error al obtener todos los productos:', error);
     }

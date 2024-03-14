@@ -20,7 +20,7 @@ interface ProductoPedido {
 export const fetchProductoPedidoByPedidoId = async (id: number) => {
     try {
       const favs = await getProductoPedidoByPedidoId(id);
-      console.log('ProductoPedido by PedidoId:', favs);
+      //console.log('ProductoPedido by PedidoId:', favs);
     } catch (error) {
       console.error('Error al obtener el productoPedido:', error);
     }
@@ -29,7 +29,7 @@ export const fetchProductoPedidoByPedidoId = async (id: number) => {
 export const fetchCreateProductoPedido = async (productoPedido: ProductoPedido) => {
     try {
       const favs = await createProductoPedido(productoPedido);
-      console.log('ProductoPedido creado correctamente:', favs);
+      //console.log('ProductoPedido creado correctamente:', favs);
     } catch (error) {
       console.error('Error al crear productoPedido:', error);
     }

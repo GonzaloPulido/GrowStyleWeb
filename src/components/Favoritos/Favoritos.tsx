@@ -1,21 +1,106 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
 import Image from 'next/image'
+import useAuthStore from '../../store/loginStore';
+import { fetchDeleteFavorite, fetchFavoriteByUserId } from '../../api/utils/favoritoFunctions';
+import { customToast } from '../../share/notifications';
+import { fetchProductById } from '../../api/utils/productoFunctions';
+import FavoritoPerfilComponent from '../../modules/FavoritoPerfilComponent/FavoritoPerfilComponent';
 
+interface Producto {
+    id: number;
+    nombre: string;
+    precio: number;
+    precio_descuento: number;
+    color: string;
+    imagen: string;
+    talla_xs: number;
+    talla_s: number;
+    talla_m: number;
+    talla_l: number;
+    talla_xl: number;
+    talla_xxl: number;
+  }
+  
+interface Favorito {
+id: number;
+id_usuario: number;
+id_producto: number;
+}
 const Favoritos = () => {
-    const [prodFav, setprodFav] = useState([
-        {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", descuento: 10, precio: 20.05, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    ])
+    const checkLogged = useAuthStore.getState().isLogged
+    const myUser = useAuthStore.getState().loggedUser
+    const [favoritos, setFavoritos] = useState<Favorito[]>()
+    const [productos, setProductos] = useState<Producto[]>()
+    const [errorAlertShown, setErrorAlertShown] = useState(false)
 
-    let precioFinal = 0
+    const handleEliminarFavorito = async (idFavorito: number, idProducto: number) => {
+        try {
+            await fetchDeleteFavorite(idFavorito);
+    
+            const nuevosFavoritos = favoritos?.filter(fav => fav.id !== idFavorito);
+            setFavoritos(nuevosFavoritos);
+    
+            const nuevosProductos = productos?.filter(prod => prod.id !== idProducto);
+            setProductos(nuevosProductos);
+
+            if (!errorAlertShown) {
+                customToast("Producto eliminado de favoritos", {
+                    type: "success",
+                    position: "top-left",
+                    autoClose: 3000,
+                    theme: "colored",
+                });
+                setErrorAlertShown(true);
+            }
+            setErrorAlertShown(false);
+    
+        } catch (error) {
+            console.error('Error al eliminar el favorito:', error);
+        }
+    };
+
+    useEffect(() => {
+        const obtenerProductos = async () => {
+            try {
+                const productosList: Producto[] = [];
+                if (favoritos && favoritos.length > 0) {
+                    const promises = favoritos.map(async fav => {
+                        const fetchedProd = await fetchProductById(fav.id_producto);
+                        if (fetchedProd) {
+                            productosList.push(fetchedProd);
+                        }
+                    });
+                    await Promise.all(promises);
+                    setProductos(productosList);
+                } else {
+                    setProductos([]);
+                }
+            } catch (error) {
+                console.error('Error al obtener productos:', error);
+            }
+        }
+        obtenerProductos();
+    }, [favoritos]);
+
+    useEffect( () => {
+        if (checkLogged) {
+          const fetchFavoritos = async () => {
+            try {
+              const data = await fetchFavoriteByUserId(myUser.id);
+              if (data && Array.isArray(data)) {
+                setFavoritos(data);
+              } else {
+                console.error('Error: Datos de productos no válidos.');
+              }
+            } catch (error) {
+              console.error('Error fetching productos:', error);
+            }
+          };
+          fetchFavoritos();
+        }
+      }, []);
 
   return (
     
@@ -24,26 +109,23 @@ const Favoritos = () => {
             Favoritos
         </SDataTitle>
         <SFavoritos>
-        {prodFav.map((prod)=>{
-            if (prod.descuento > 0) {
-                precioFinal = prod.descuento
-            }else {
-                precioFinal = prod.precio
-            }
-            const { id, nombre, color, precio, descuento, imagen,  talla } = prod;
-            return(
-                <SFav>
-                    <SFavImage src={imagen} alt='' width={0} height={0}/>
-                    <SInfoContainer>
-                        <SNombreFav>{nombre}</SNombreFav>
-                        <SDatoSFav>
-                            <SColor id={color}/>
-                            <SPrecio>{precioFinal}€</SPrecio>
-                        </SDatoSFav>
-                    </SInfoContainer>
-                </SFav>
-            )
-        })}
+        {productos ? (
+            productos.map( (prod) => {
+                const {id, nombre, color, imagen, precio, precio_descuento} = prod
+                const favorito: any = favoritos?.find(fav => fav.id_producto === id && fav.id_usuario === myUser.id);
+                //console.log("A ver favorito",favorito.id);
+
+                return(
+                    <FavoritoPerfilComponent key={id} id={id} imagen={imagen} nombre={nombre} 
+                    precioDescuento={precio_descuento} precio={precio} color={color}
+                    onDeleteFavorito={handleEliminarFavorito}
+                    idFav={favorito?.id}
+                    ></FavoritoPerfilComponent>
+                )
+            })
+        ) : (
+            ""
+        )}
         </SFavoritos>
     </SData>
   )
@@ -71,86 +153,6 @@ const SFavoritos = styled.div`
     margin: auto;
   }
 `
-
-const SFav = styled.div`
-    width: 700px;
-    display: flex;
-    gap: 90px;
-    border-bottom: 2px solid ${COLORS.gray};
-    @media (max-width: 820px) {
-        flex-direction: column;
-        gap: 15px;
-        width: 350px;
-    }
-`
-
-const SFavImage = styled(Image)`
-    width: 150px;
-    height: 200px;
-    @media (max-width: 820px) {
-    align-self: center;
-    }
-`
-
-const SInfoContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 70px;
-    @media (max-width: 820px) {
-        align-self: center;
-        gap: 30px;
-    }
-`
-
-const SNombreFav = styled.h2`
-    text-align: center;
-    font-size: 25px;
-`
-
-const SDatoSFav = styled.div`
-    display: flex;
-    width: 250px;
-    //gap: 70px;
-    //margin-left: 50px;
-    justify-content: space-between;
-    @media (max-width: 820px) {
-       margin: auto;
-       justify-content: space-around;
-       margin-bottom: 15px;
-    }
-`
-
-const SColor = styled.div`
-    padding: 5px;
-    border-radius: 100%;
-    width: 35px;
-    height: 35px;
-    &#rojo{
-        border: 2px solid ${COLORS.black};
-        background-color: red;
-    }
-    &#azul{
-        border: 2px solid ${COLORS.black};
-        background-color: blue;
-    }
-    &#negro{
-        border: 2px solid ${COLORS.gray};
-        background-color: black;
-    }
-    &#verde{
-        border: 2px solid ${COLORS.black};
-        background-color: green;
-    }
-`
-
-const STalla = styled.div`
-    font-size: 25px;
-`
-
-const SPrecio = styled.div`
-    font-size: 25px;
-`
-
 
 
 export default Favoritos

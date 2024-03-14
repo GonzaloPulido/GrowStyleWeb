@@ -17,7 +17,7 @@ interface User {
 export const fetchAllUsuarios = async () => {
     try {
       const users = await getAllUsers();
-      console.log('Todos los usuarios:', users);
+      //console.log('Todos los usuarios:', users);
       return users
     } catch (error) {
       console.error('Error al obtener todos los usuarios:', error);
@@ -27,7 +27,7 @@ export const fetchAllUsuarios = async () => {
 export const fetchUserById = async (id: number) => {
     try {
       const user = await getUserById(id);
-      console.log('Usuario by Id:', user);
+      //console.log('Usuario by Id:', user);
     } catch (error) {
       console.error('Error al obtener el usuario:', error);
     }
@@ -36,7 +36,7 @@ export const fetchUserById = async (id: number) => {
 export const fetchCreateUsuario = async (usuario: User) => {
     try {
       const user = await createUser(usuario);
-      console.log('Usuario creado correctamente:', user);
+      //console.log('Usuario creado correctamente:', user);
     } catch (error) {
       console.error('Error al crear pedido:', error);
     }
@@ -45,7 +45,7 @@ export const fetchCreateUsuario = async (usuario: User) => {
 export const fetchUpdateUsuario = async (id: number, data: User) => {
     try {
       const user = await updateUser(id, data);
-      console.log('Usuario actualizado correctamente:', user);
+      //console.log('Usuario actualizado correctamente:', user);
     } catch (error) {
       console.error('Error al actualizar el usuario:', error);
     }
@@ -54,7 +54,7 @@ export const fetchUpdateUsuario = async (id: number, data: User) => {
 export const fetchDeleteUsuario = async (id: number) => {
     try {
       const user = await deleteUser(id);
-      console.log('Usuario eliminado correctamente:', user);
+      //console.log('Usuario eliminado correctamente:', user);
     } catch (error) {
       console.error('Error al eliminar el usuario:', error);
     }
