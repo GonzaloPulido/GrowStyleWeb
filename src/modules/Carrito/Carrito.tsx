@@ -5,7 +5,10 @@ import Image from "next/image"
 import close from "../../../public/icons/closeIcon.svg"
 import basket from "../../../public/icons/basketIcon.svg"
 import trash from "../../../public/icons/trashIcon.svg"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import useAuthStore from "../../store/loginStore"
+import { fetchProductById } from "../../api/utils/productoFunctions"
+import CarritoProductoComponent from "../CarritoProductoComponent/CarritoProductoComponent"
 
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
@@ -17,7 +20,55 @@ interface CartProps {
     onClose: () => void
 }
 
+interface CartItem {
+    productId: number;
+    cantidadProd: number;
+    tallaProd?: string;
+}
+
+interface Producto {
+    id: number;
+    nombre: string;
+    precio: number;
+    precio_descuento: number;
+    color: string;
+    imagen: string;
+    talla_xs: number;
+    talla_s: number;
+    talla_m: number;
+    talla_l: number;
+    talla_xl: number;
+    talla_xxl: number;
+  }
+
 const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
+    const myUser = useAuthStore.getState().loggedUser
+    const loggedUser = useAuthStore.getState().loggedUser
+    const [carrito, setCarrito] = useState<CartItem[]|null>(null)
+    const [productos, setProductos] = useState<Producto[]>()
+    
+    useEffect(() => {
+        if(loggedUser && myUser){
+            const callCarrito = localStorage.getItem(`cart_${myUser.id}`);
+        if (callCarrito) {
+            const parsedCarrito: CartItem[] = JSON.parse(callCarrito);
+            setCarrito(parsedCarrito);
+            /* if(carrito){
+                const productosList = []
+                carrito.forEach(async carritoProducto => {
+                    const fetchedProd = await fetchProductById(carritoProducto.productId)
+
+                    productosList.push(fetchedProd,carritoProducto.tallaProd,carritoProducto.cantidadProd)
+                });
+            } */
+        } else {
+            setCarrito(null);
+        }
+        }
+        
+    }, [])
+    
+
     let precioFinal = 0
     const incrementarPrecio = () => {
         precioFinal += 1
@@ -35,6 +86,7 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
         {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 30, cantidad: 1, descuento: 0, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
         {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
         {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
+    
     ])
 
     const eliminarElemento = (id: number) => {
@@ -61,38 +113,22 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
                             </SCloseButton>
                             <STitle>Carrito</STitle>
                             <SContainerCart>
-                            {prodCarrito.map((prod)=>{
-                                if (prod.descuento > 0) {
+                            {productos?.map(async (prod)=>{
+                                
+                                return(
+                                    <CarritoProductoComponent key={prod.id}  productoId={prod.id} productoNombre={prod.nombre} productoColor={prod.color}
+                                    productoPrecio={prod.precio} productoPrecioDescuento={prod.precio_descuento} talla={""}
+                                    cantidad={0}
+                                    ></CarritoProductoComponent>
+                                )
+                                
+                                /* if (prod.descuento > 0) {
                                     precioFinal += prod.descuento
                                 }else {
                                     precioFinal += prod.precio
                                 }
-                                const { id, nombre, color, precio, descuento, imagen, cantidad, talla } = prod;
-                                return(
-                                    <SCartProdContainer>
-                                        <SCartProdImage src={imagen} alt="" width={0} height={0}/>
-                                        <SInfoContainer>
-                                            <SCartName>{nombre}</SCartName>
-                                            <SModifyContainer>
-                                                <SColor id={color}/>
-                                                <SSize>{talla}</SSize>
-                                                <SQuantity>
-                                                    <SAdd>+</SAdd>
-                                                    <SNumber>{cantidad}</SNumber>
-                                                    <SSubtract>-</SSubtract>
-                                                </SQuantity>
-                                            </SModifyContainer>
-                                            
-                                            <SPriceContainer>
-                                                <SFinalPrice>{descuento}€</SFinalPrice>
-                                                <SSaleWithoutDiscount>{precio}€</SSaleWithoutDiscount>
-                                            </SPriceContainer>
-                                        </SInfoContainer>
-                                        <SIconsContainer>
-                                            <STrashIcon src={trash} alt="" onClick={() => eliminarElemento(id)}/>
-                                        </SIconsContainer>
-                                    </SCartProdContainer>
-                                )
+                                const { id, nombre, color, precio, descuento, imagen, cantidad, talla } = prod; */
+                                
                             })}
                             <SFinalPriceContainer>
                                 <STitlePrice>Total: </STitlePrice>
@@ -172,7 +208,7 @@ const SContainerCart = styled.div`
     width: 100%;
 `
 
-const SCartProdContainer = styled.div`
+const SprodContainer = styled.div`
     display: flex;
     width: 100%;
     justify-content:space-between;
@@ -193,7 +229,7 @@ const SIconsContainer = styled.div`
     align-items: center;
     gap: 20px;
 `
-const SCartProdImage = styled(Image)`
+const SprodImage = styled(Image)`
     width: 90px;
     height: 135px;
 `

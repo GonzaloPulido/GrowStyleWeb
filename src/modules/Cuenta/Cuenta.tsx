@@ -17,7 +17,7 @@ const Cuenta = () => {
     useEffect(() => {
         if ((errors.nombre || errors.apellidos || errors.telefono || errors.email || errors.password || errors.checkPassword) &&
             !errorAlertShown) {
-            customToast("Credenciales incorrectas", {
+            customToast("Datos incorrectos", {
                 type: "error",
                 position: "top-left",
                 autoClose: 3000,

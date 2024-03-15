@@ -122,7 +122,7 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
                                     {...register('contrasenya',{
                                         required: "Este campo es obligatorio",
                                         pattern: {
-                                            value: /^(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
+                                            value: /^(?!.*\s)(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
                                             message: "Minus. y mayus. con simbolos y longitud minima 5"
                                         },
                                     })}

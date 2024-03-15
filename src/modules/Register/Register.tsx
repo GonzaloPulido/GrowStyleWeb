@@ -150,7 +150,8 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
                                     {...register('contrasenya',{
                                         required: "Este campo es obligatorio",
                                         pattern: {
-                                            value: /^(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
+                                            //value: /^(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
+                                            value: /^(?!.*\s)(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
                                             message: "Minus. y mayus. con simbolos y longitud minima 5"
                                         },
                                     })}
@@ -168,7 +169,10 @@ const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
                                     <SPasswordToggle src={visiblePassword ? openEye : closedEye} alt="" onClick={() => setvisiblePassword(!visiblePassword)}/>
                                 </InputContainer>
                             </SForm>
-                            <SButton onClick={handleSubmit(onSubmit)}>Crear Cuenta</SButton>
+                            <SButtonsContainer>
+                                <SButton onClick={handleSubmit(onSubmit)}>Crear Cuenta</SButton>
+                                <SButton onClick={onClose}>Iniciar sesion</SButton>
+                            </SButtonsContainer>
                         </SPopUpContainer>
                     </SShader>
                 </DynamicPortal>
@@ -260,7 +264,7 @@ const SPasswordToggle = styled(Image)`
     height: 1.875rem;
     position: absolute;
     right: 0;
-    top: 245px;
+    top: 212px;
     margin-top: 25.625rem;
     margin-right: 4.063rem;
     cursor: pointer;
@@ -285,6 +289,13 @@ const SError = styled.span`
 const InputContainer = styled.div`
     display: flex;
     flex-direction: column; 
+`
+
+const SButtonsContainer = styled.div`
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 `
 
 export default Login

@@ -10,7 +10,7 @@ import {Nunito } from "next/font/google"
 export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
 import cart from "../../../public/icons/basketIcon.svg"
 import { fetchProductById } from '../../api/utils/productoFunctions';
-import { base64topng } from '../../functions/generalFunctions';
+import { addToCart, base64topng } from '../../functions/generalFunctions';
 import defaultImage from '../../../public/icons/default.png';
 import useAuthStore from '../../store/loginStore';
 import { fetchCreateFavorite, fetchDeleteFavorite, fetchFavoriteByUserId } from '../../api/utils/favoritoFunctions';
@@ -50,8 +50,6 @@ const Producto = () => {
     const favorito: any = favoritos?.find(fav => fav.id_producto === product?.id && fav.id_usuario === myUser.id);
     const [favIcon, setFavIcon] = useState(favorito)
     const [idFav, setIdFav] = useState(favorito ? favorito.id : 0)
-
-
 
     useEffect(() => {
       const fetchData = async () => {
@@ -226,7 +224,7 @@ const Producto = () => {
       </SSizeSelector>
       <SButton>
         <SCartIcon src={cart} alt=''/>
-        <SButtonTitle>Añadir al carrito</SButtonTitle>
+        <SButtonTitle onClick={() => product?.id ? addToCart(checkLogged, product.id, myUser.id, size) : ""}>Añadir al carrito</SButtonTitle>
       </SButton>
       </SRight>
     </SProductoContainer>

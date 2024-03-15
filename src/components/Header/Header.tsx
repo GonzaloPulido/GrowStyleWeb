@@ -19,7 +19,6 @@ import useAuthStore from '../../store/loginStore'
 const Header = () => {
   const [menu, setMenu] = useState(false)
   const checkLogin = useAuthStore.getState().isLogged;
-  // Variables para el icono de perfil
   const [login, setLogin] = useState(false)
   const [favoritos, setFavoritos] = useState(false)
   const [carrito, setCarrito] = useState(false)
@@ -39,10 +38,10 @@ const Header = () => {
     <SHeader>
       <SSidebarIcon src={barsIcon} alt='' onClick={() => setMenu(true)}/>
       <SLogoGrowStyle src={logoGrow.src} alt='' width="0" height="0" onClick={() => router.push("/")}/>
-      <SRightContainer>
+      <SRightContainer className={!checkLogin? "end" : ""}>
         <SProfileIcon src={profileIcon} alt='' /* onClick={() => selectProfileIcon()} */ onClick={!checkLogin ? () => selectProfileIcon() : () => router.push('/perfil')} />
-        <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)}/>
-        <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)}/>
+        {checkLogin && <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)}/>}
+        {checkLogin && <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)}/>}
       </SRightContainer>
       {(menu) && (<Menu isActive={menu} onClose={() => setMenu(false)}/>)}
       {(login) && (<Login isActive={login} onClose={() => setLogin(false)}/>)}
@@ -89,6 +88,9 @@ const SRightContainer = styled.div`
   display: flex;
   justify-content:space-between;
   gap: 0.013rem;
+  &.end{
+    justify-content: flex-end;
+  }
   
 `
 
