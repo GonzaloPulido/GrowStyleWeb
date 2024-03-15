@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import barsIcon from '../../../public/icons/barsIcon.svg'
 import logoGrow from '../../../public/icons/bigLogoGrowStyle.png'
@@ -18,13 +18,13 @@ import useAuthStore from '../../store/loginStore'
 
 const Header = () => {
   const [menu, setMenu] = useState(false)
+  const [check, setCheck] = useState<Boolean>()
   const checkLogin = useAuthStore.getState().isLogged;
   const [login, setLogin] = useState(false)
   const [favoritos, setFavoritos] = useState(false)
   const [carrito, setCarrito] = useState(false)
   const [profile, setProfile] = useState(false)
   const [logged, setLogged] = useState(false)
-
 
   const selectProfileIcon = () => { // Esta funcion comprueba si el usuario esta logueado o si no lo esta, y decide...
     if (logged) {
@@ -40,8 +40,8 @@ const Header = () => {
       <SLogoGrowStyle src={logoGrow.src} alt='' width="0" height="0" onClick={() => router.push("/")}/>
       <SRightContainer className={!checkLogin? "end" : ""}>
         <SProfileIcon src={profileIcon} alt='' /* onClick={() => selectProfileIcon()} */ onClick={!checkLogin ? () => selectProfileIcon() : () => router.push('/perfil')} />
-        {checkLogin && <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)}/>}
-        {checkLogin && <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)}/>}
+        <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)} className={checkLogin? "" : "end"}/>
+        <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)} className={checkLogin? "" : "end"}/>
       </SRightContainer>
       {(menu) && (<Menu isActive={menu} onClose={() => setMenu(false)}/>)}
       {(login) && (<Login isActive={login} onClose={() => setLogin(false)}/>)}
@@ -104,12 +104,18 @@ const SFavorites = styled(Image)`
   width: 1.875rem;
   height: 1.875rem;
   cursor: pointer;
+  &.end{
+    display: none;
+  }
 `
 
 const SCartIcon = styled(Image)`
   width: 1.875rem;
   height: 1.875rem;
   cursor: pointer;
+  &.end{
+    display: none;
+  }
 `
 
 

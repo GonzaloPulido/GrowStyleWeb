@@ -7,22 +7,8 @@ import { customToast } from '../../share/notifications'
 import router from 'next/router'
 
 const AtencionCliente = () => {
-  const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+  const {register, formState: {errors}, handleSubmit, getValues} = useForm({ mode: "onChange" })
   const [errorAlertShown, setErrorAlertShown] = useState(false)
-
-  useEffect(() => {
-    if ((errors.nombre || errors.apellidos || errors.email || errors.comentario) && !errorAlertShown) {
-        customToast("Debes rellenar el formulario", {
-            type: "error",
-            position: "top-left",
-            autoClose: 3000,
-            theme: "colored",
-        });
-        setErrorAlertShown(true);
-    } else if (!errors.nombre && !errors.apellidos && !errors.email && !errors.comentario) {
-        setErrorAlertShown(false);
-    }
-}, [errors.nombre, errors.apellidos, errors.email, errors.comentario, errorAlertShown]);
 
   const redirect = () => {
     router.push("/")

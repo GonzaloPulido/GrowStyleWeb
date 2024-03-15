@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useLayoutEffect, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout'
 import styled from 'styled-components'
 import profile from '../../../public/icons/profileIcon.svg'

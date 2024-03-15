@@ -7,7 +7,7 @@ import { FieldValues, useForm } from 'react-hook-form'
 import { customToast } from '../../share/notifications'
 
 const Direccion = () => {
-    const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+    const {register, formState: {errors}, handleSubmit, getValues} = useForm({ mode: "onChange" })
     const usuarioLogueado = useAuthStore.getState().loggedUser
     const checkLogged = useAuthStore.getState().isLogged
     const [loggedUserId, setLoggedUserId] = useState(0)

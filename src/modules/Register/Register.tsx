@@ -26,24 +26,8 @@ interface RegisterProps {
 
 const Login: React.FC<RegisterProps> = ({onClose, isActive, onCloseLogin}) => {
     const [visiblePassword, setvisiblePassword] = useState(false)
-    const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+    const {register, formState: {errors}, handleSubmit, getValues} = useForm({ mode: "onChange" })
     const [errorAlertShown, setErrorAlertShown] = useState(false)
-
-    useEffect(() => {
-        if ((errors.nombre || errors.apellidos || errors.telefono || errors.email || errors.password || errors.checkPassword) &&
-            !errorAlertShown) {
-            customToast("Credenciales incorrectas", {
-                type: "error",
-                position: "top-left",
-                autoClose: 3000,
-                theme: "colored",
-            });
-            setErrorAlertShown(true);
-        } else if (!errors.nombre && !errors.apellidos && !errors.telefono && !errors.email && !errors.password && !errors.checkPassword) {
-            setErrorAlertShown(false);
-        }
-    }, [errors.nombre, errors.apellidos, errors.telefono, errors.email, errors.password, errors.checkPassword, errorAlertShown]);
-    
 
     const onSubmit = async (data: FieldValues) => {
         try {

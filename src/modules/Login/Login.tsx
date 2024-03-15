@@ -26,25 +26,9 @@ interface LoginProps {
 const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
     const [registerPopUp, setRegisterPopUp] = useState(false)
     const [visiblePassword, setvisiblePassword] = useState(false)
-    const {register, formState: {errors}, handleSubmit, control} = useForm()
+    const {register, formState: {errors}, handleSubmit, control} = useForm({ mode: "onChange" })
     const [errorAlertShown, setErrorAlertShown] = useState(false)
-
-
-    useEffect(() => {
-        if (errors.email != null || errors.password != null && !errorAlertShown) {
-            customToast("Credenciales incorrectas", {
-                type: "error",
-                position: "top-left",
-                //toastId: "", 
-                autoClose: 3000,
-                theme: "colored",
-            })
-        } else if (!errors.email && !errors.password ){
-            setErrorAlertShown(false);
-        }
-
-    }, [errors.email, errors.password])
-    
+    const [errorEmail, setErrorEmail] = useState(false)
 
     const onSubmit = async (data: FieldValues) => {
         try {
@@ -114,8 +98,9 @@ const Login: React.FC<LoginProps> = ({onClose, isActive}) => {
                                             message: "Tu email no es correcto"
                                         },
                                     })}
+                                    onBlur={() => errors.email ? setErrorEmail(true) : ""}
                                     />
-                                    {errors.email && <SError>{errors.email.message as string}</SError>}
+                                    { (errorEmail && errors.email) && <SError>{errors.email.message as string}</SError>}
                                 </InputContainer>
                                 <InputContainer>
                                     <SInput type={visiblePassword ? 'text' : 'password'} placeholder="Contraseña" autoComplete="off"
@@ -266,3 +251,7 @@ const InputContainer = styled.div`
 `
 
 export default Login
+
+function setErrorVisible(arg0: (prev: any) => any) {
+    throw new Error("Function not implemented.")
+}

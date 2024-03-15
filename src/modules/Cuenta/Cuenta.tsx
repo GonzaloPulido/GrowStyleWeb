@@ -9,25 +9,10 @@ import { customToast } from '../../share/notifications'
 import Delete from '../PopUp/Delete'
 
 const Cuenta = () => {
-    const {register, formState: {errors}, handleSubmit, getValues} = useForm()
+    const {register, formState: {errors}, handleSubmit, getValues} = useForm({ mode: "onChange" })
     const usuarioLogueado = useAuthStore.getState().loggedUser
     const [errorAlertShown, setErrorAlertShown] = useState(false)
     const [deletePopUp, setDeletePopUp] = useState(false)
-
-    useEffect(() => {
-        if ((errors.nombre || errors.apellidos || errors.telefono || errors.email || errors.password || errors.checkPassword) &&
-            !errorAlertShown) {
-            customToast("Datos incorrectos", {
-                type: "error",
-                position: "top-left",
-                autoClose: 3000,
-                theme: "colored",
-            });
-            setErrorAlertShown(true);
-        } else if (!errors.nombre && !errors.apellidos && !errors.telefono && !errors.email && !errors.password && !errors.checkPassword) {
-            setErrorAlertShown(false);
-        }
-    }, [errors.nombre, errors.apellidos, errors.telefono, errors.email, errors.password, errors.checkPassword, errorAlertShown]);
 
     const onSubmit = async (data: FieldValues) => {
         try{
@@ -130,7 +115,7 @@ const Cuenta = () => {
                     {...register('contrasenya',{
                         required: "Este campo es obligatorio",
                         pattern: {
-                            value: /^(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
+                            value: /^(?!.*\s)(?=.*[a-zA-Z])(?=.*\d).{5,}$/,
                             message: "Minus. y mayus. con simbolos y longitud minima 5"
                         },
                     })}
