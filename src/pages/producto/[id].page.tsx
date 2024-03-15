@@ -198,6 +198,25 @@ const Producto = () => {
     }setErrorAlertShown(false);
     }
     }
+
+  const handleCart = () => {
+    if(product?.id ) {
+      if(size > 0){
+        addToCart(checkLogged, product.id, myUser.id, size)
+      }else{
+        if (!errorAlertShown) {
+          customToast("Debes seleccionar una talla", {
+              type: "error",
+              position: "top-left",
+              autoClose: 3000,
+              theme: "colored",
+          });
+          setErrorAlertShown(true);
+      }
+      setErrorAlertShown(false);
+      }
+    }
+  } 
     
   return (
     <SProductoContainer>
@@ -224,7 +243,7 @@ const Producto = () => {
       </SSizeSelector>
       <SButton>
         <SCartIcon src={cart} alt=''/>
-        <SButtonTitle onClick={() => product?.id ? addToCart(checkLogged, product.id, myUser.id, size) : ""}>Añadir al carrito</SButtonTitle>
+        <SButtonTitle onClick={handleCart}>Añadir al carrito</SButtonTitle>
       </SButton>
       </SRight>
     </SProductoContainer>

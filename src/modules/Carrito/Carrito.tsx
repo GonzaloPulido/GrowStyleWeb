@@ -5,10 +5,11 @@ import Image from "next/image"
 import close from "../../../public/icons/closeIcon.svg"
 import basket from "../../../public/icons/basketIcon.svg"
 import trash from "../../../public/icons/trashIcon.svg"
-import { useEffect, useState } from "react"
+import { SetStateAction, useEffect, useState } from "react"
 import useAuthStore from "../../store/loginStore"
 import { fetchProductById } from "../../api/utils/productoFunctions"
 import CarritoProductoComponent from "../CarritoProductoComponent/CarritoProductoComponent"
+import { customToast } from "../../share/notifications"
 
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
@@ -21,7 +22,7 @@ interface CartProps {
 }
 
 interface CartItem {
-    productId: number;
+    cartProductId: number;
     cantidadProd: number;
     tallaProd?: string;
 }
@@ -39,68 +40,116 @@ interface Producto {
     talla_l: number;
     talla_xl: number;
     talla_xxl: number;
-  }
+}
+
+interface ProductoCarrito {
+    producto: Producto;
+    cantidad: number;
+    talla?: string;
+}
 
 const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
     const myUser = useAuthStore.getState().loggedUser
     const loggedUser = useAuthStore.getState().loggedUser
     const [carrito, setCarrito] = useState<CartItem[]|null>(null)
-    const [productos, setProductos] = useState<Producto[]>()
+    const [productos, setProductos] = useState<ProductoCarrito[]>()
+    const [errorAlertShown, setErrorAlertShown] = useState(false)
+    const [precioTotalCarrito, setPrecioTotalCarrito] = useState(0);
     
-    useEffect(() => {
+    useEffect( () => {
         if(loggedUser && myUser){
             const callCarrito = localStorage.getItem(`cart_${myUser.id}`);
-        if (callCarrito) {
-            const parsedCarrito: CartItem[] = JSON.parse(callCarrito);
-            setCarrito(parsedCarrito);
-            /* if(carrito){
-                const productosList = []
-                carrito.forEach(async carritoProducto => {
-                    const fetchedProd = await fetchProductById(carritoProducto.productId)
-
-                    productosList.push(fetchedProd,carritoProducto.tallaProd,carritoProducto.cantidadProd)
-                });
-            } */
-        } else {
-            setCarrito(null);
+            if (callCarrito) {
+                const parsedCarrito: CartItem[] = JSON.parse(callCarrito);
+                setCarrito(parsedCarrito);
+            } else {
+                setCarrito(null);
+            }
         }
-        }
-        
     }, [])
-    
 
-    let precioFinal = 0
-    const incrementarPrecio = () => {
-        precioFinal += 1
-    }
-    const decrementarPrecio = () => {
-        precioFinal -= 1
-    }
-
-    const [prodCarrito, setProdCarrito] = useState([
-        {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 30,cantidad: 1 , descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 30, cantidad: 1, descuento: 0, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 30, cantidad: 1, descuento: 0, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    
-    ])
-
-    const eliminarElemento = (id: number) => {
-        const nuevoCarrito = [...prodCarrito];
-        const indice = prodCarrito.findIndex((prod) => prod.id === id);
-        
-        if (indice !== -1) {
-            const nuevoCarritoActualizado = [...nuevoCarrito];
-            nuevoCarritoActualizado.splice(indice, 1);
-            setProdCarrito(nuevoCarritoActualizado);
-        } else {
+    useEffect(() => {
+        if(carrito && carrito !== null){
+            const fetchProducts = async () => {
+                const productosList = [];
+                for(const element of carrito) {
+                    const { cantidadProd, cartProductId, tallaProd } = element;
+                    const fetchedProd = await fetchProductById(cartProductId);
+                    if(fetchedProd) {
+                        const productoConCantidadYTalla = {
+                            producto: fetchedProd,
+                            cantidad: cantidadProd,
+                            talla: tallaProd
+                        };
+                        productosList.push(productoConCantidadYTalla);
+                    } 
+                }
+                setProductos(productosList);
+            };
+            fetchProducts();
         }
-    }
+    }, [carrito]);
 
+    useEffect(() => {
+        setPrecioTotalCarrito(calcularPrecioTotal());
+    }, [productos]);
+
+    const handleEliminarProdCarrito = (carrito: CartItem[] | null, productoId: number, talla: string) => {
+        if (carrito) {
+            const indiceProductoAEliminar = carrito.findIndex(objeto => objeto.cartProductId === productoId && objeto.tallaProd === talla);
+            if (indiceProductoAEliminar !== -1) {
+                const nuevoCarrito = [...carrito];
+                nuevoCarrito.splice(indiceProductoAEliminar, 1);
+                localStorage.setItem(`cart_${myUser.id}`, JSON.stringify(nuevoCarrito));
+                setCarrito(nuevoCarrito);
+
+                if (!errorAlertShown) {
+                    customToast("Producto eliminado del carrito", {
+                        type: "success",
+                        position: "top-left",
+                        autoClose: 3000,
+                        theme: "colored",
+                    });
+                    setErrorAlertShown(true);
+                }
+                setErrorAlertShown(false);
+            }
+        }
+    };
+
+    const calcularPrecioTotal = () => {
+        let precioTotal = 0;
+        productos?.forEach(producto => {
+            const precioProducto = producto.producto.precio_descuento > 0 ? producto.producto.precio_descuento : producto.producto.precio;
+            precioTotal += precioProducto * producto.cantidad;
+        });
+        return parseFloat(precioTotal.toFixed(2));
+    
+    };
+
+    const aumentarCantidadProdCarrito = (carrito: CartItem[] | null, productoId: number, talla: string) => {
+        if (carrito) {
+            const indiceProducto = carrito.findIndex(objeto => objeto.cartProductId === productoId && objeto.tallaProd === talla);
+            if (indiceProducto !== -1) {
+                const nuevoCarrito = [...carrito];
+                nuevoCarrito[indiceProducto].cantidadProd += 1;
+                localStorage.setItem(`cart_${myUser.id}`, JSON.stringify(nuevoCarrito));
+                setCarrito(nuevoCarrito);
+            }
+        }
+    };
+
+    const disminuirCantidadProdCarrito = (carrito: CartItem[] | null, productoId: number, talla: string) => {
+        if (carrito) {
+            const indiceProducto = carrito.findIndex(objeto => objeto.cartProductId === productoId && objeto.tallaProd === talla);
+            if (indiceProducto !== -1 && carrito[indiceProducto].cantidadProd > 1) {
+                const nuevoCarrito = [...carrito];
+                nuevoCarrito[indiceProducto].cantidadProd -= 1;
+                localStorage.setItem(`cart_${myUser.id}`, JSON.stringify(nuevoCarrito));
+                setCarrito(nuevoCarrito);
+            }
+        }
+    };
 
     return(
         <>  
@@ -113,26 +162,26 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
                             </SCloseButton>
                             <STitle>Carrito</STitle>
                             <SContainerCart>
-                            {productos?.map(async (prod)=>{
-                                
+                            {productos?.map((prod)=>{
+                                let myKey = ""
+                                const {producto, cantidad, talla} = prod
+                                if (talla) {
+                                    myKey = producto.id+talla
+                                }else{
+                                    myKey = `${producto.id} `
+                                }
                                 return(
-                                    <CarritoProductoComponent key={prod.id}  productoId={prod.id} productoNombre={prod.nombre} productoColor={prod.color}
-                                    productoPrecio={prod.precio} productoPrecioDescuento={prod.precio_descuento} talla={""}
-                                    cantidad={0}
+                                    <CarritoProductoComponent key={myKey}  productoId={producto.id} productoNombre={producto.nombre} productoColor={producto.color}
+                                    productoPrecio={producto.precio} productoPrecioDescuento={producto.precio_descuento} talla={talla}
+                                    cantidad={cantidad} imagen={producto.imagen} onDeleteProdCarrito={handleEliminarProdCarrito} aumentarCantidad={aumentarCantidadProdCarrito}
+                                    disminuirCantidad={disminuirCantidadProdCarrito}
+                                    carritoPadre={carrito}
                                     ></CarritoProductoComponent>
                                 )
-                                
-                                /* if (prod.descuento > 0) {
-                                    precioFinal += prod.descuento
-                                }else {
-                                    precioFinal += prod.precio
-                                }
-                                const { id, nombre, color, precio, descuento, imagen, cantidad, talla } = prod; */
-                                
                             })}
                             <SFinalPriceContainer>
                                 <STitlePrice>Total: </STitlePrice>
-                                <STitleNumber>{precioFinal}€</STitleNumber>
+                                <STitleNumber>{precioTotalCarrito}€</STitleNumber>
                             </SFinalPriceContainer>
                             <SBuyButton>
                                 <SButtonTitle>Tramitar pedido</SButtonTitle>

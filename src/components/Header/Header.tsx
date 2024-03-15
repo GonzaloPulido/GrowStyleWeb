@@ -34,14 +34,20 @@ const Header = () => {
     }
   }
 
+  useEffect(() => {
+    const checkLogin = useAuthStore.getState().isLogged;
+
+  }, [])
+  
+
   return (
     <SHeader>
       <SSidebarIcon src={barsIcon} alt='' onClick={() => setMenu(true)}/>
       <SLogoGrowStyle src={logoGrow.src} alt='' width="0" height="0" onClick={() => router.push("/")}/>
       <SRightContainer className={!checkLogin? "end" : ""}>
         <SProfileIcon src={profileIcon} alt='' /* onClick={() => selectProfileIcon()} */ onClick={!checkLogin ? () => selectProfileIcon() : () => router.push('/perfil')} />
-        <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)} className={checkLogin? "" : "end"}/>
-        <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)} className={checkLogin? "" : "end"}/>
+        <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)} /* className={checkLogin? "" : "end"} *//>
+        <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)} /* className={checkLogin? "" : "end"} *//>
       </SRightContainer>
       {(menu) && (<Menu isActive={menu} onClose={() => setMenu(false)}/>)}
       {(login) && (<Login isActive={login} onClose={() => setLogin(false)}/>)}

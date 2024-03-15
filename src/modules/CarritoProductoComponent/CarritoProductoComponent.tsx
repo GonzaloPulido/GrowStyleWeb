@@ -3,7 +3,10 @@ import { COLORS } from "../../share/colors"
 import Image from "next/image"
 import trash from "../../../public/icons/trashIcon.svg"
 import { useEffect, useState } from "react"
-
+import { base64topng } from "../../functions/generalFunctions"
+import defaultImage from '../../../public/icons/default.png'
+import router from "next/router"
+import useAuthStore from "../../store/loginStore"
 
 interface CartProps {
     productoId: number,
@@ -13,64 +16,89 @@ interface CartProps {
     productoPrecioDescuento: number,
     talla?: string,
     cantidad:number,
+    imagen: string
+    onDeleteProdCarrito: any
+    aumentarCantidad: any
+    disminuirCantidad: any
+    carritoPadre: any
 }
 
-const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,productoPrecio,productoPrecioDescuento,talla,cantidad}) => {
+interface CartItem {
+    cartProductId: number;
+    cantidadProd: number;
+    tallaProd?: string;
+}
 
-    let precioFinal = 0
-    const incrementarPrecio = () => {
-        precioFinal += 1
-    }
-    const decrementarPrecio = () => {
-        precioFinal -= 1
-    }
-    const [prodCarrito, setProdCarrito] = useState([
-        {id: 1, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 30,cantidad: 1 , descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 2, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 3, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 4, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 30, cantidad: 1, descuento: 0, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 5, nombre: "Camiseta Roja" , color: "rojo", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 6, nombre: "Camiseta Azul" , color: "azul", talla: "M", precio: 30, cantidad: 1, descuento: 0, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 7, nombre: "Camiseta Negro" , color: "negro", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-        {id: 8, nombre: "Camiseta Verde" , color: "verde", talla: "M", precio: 30, cantidad: 1, descuento: 20, imagen: "https://static.pullandbear.net/2/photos//2023/I/0/2/p/7241/508/800/7241508800_2_1_8.jpg?t=1697805739291&imwidth=1125"},
-    
-    ])
+const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,productoPrecio,productoPrecioDescuento,talla,
+    cantidad,imagen,onDeleteProdCarrito, aumentarCantidad,disminuirCantidad,carritoPadre}) => {
+    const [imageSrc, setImageSrc] = useState('')
+    const myUser = useAuthStore.getState().loggedUser
+    const loggedUser = useAuthStore.getState().loggedUser
+    /* const [carrito, setCarrito] = useState<CartItem[]|null>(null) */
 
-    const eliminarElemento = (id: number) => {
-        const nuevoCarrito = [...prodCarrito];
-        const indice = prodCarrito.findIndex((prod) => prod.id === id);
-        
-        if (indice !== -1) {
-            const nuevoCarritoActualizado = [...nuevoCarrito];
-            nuevoCarritoActualizado.splice(indice, 1);
-            setProdCarrito(nuevoCarritoActualizado);
-        } else {
+    useEffect(() => {
+        const fetchImage = async () => {
+          try {
+            const img = await base64topng(imagen);
+            setImageSrc(img);
+          } catch (error) {
+            console.error('Error al cargar la imagen:', error);
+          }
+        };
+        fetchImage();
+    }, []);
+
+    /* useEffect( () => {
+        if(loggedUser && myUser){
+            const callCarrito = localStorage.getItem(`cart_${myUser.id}`);
+            if (callCarrito) {
+                const parsedCarrito: CartItem[] = JSON.parse(callCarrito);
+                setCarrito(parsedCarrito);
+            } else {
+                setCarrito(null);
+            }
         }
+    }, []) */
+
+    const handleImageClick = () => {
+        router.push(`/producto/${productoId}`);
+    };
+
+    const handleEliminarProdCarrito = () => {
+        onDeleteProdCarrito(carritoPadre, productoId, talla);
+    };
+
+    const handleAñadirCantidad = () => {
+        aumentarCantidad(carritoPadre, productoId, talla)
+    }
+
+    const handleDisminuirCantidad = () => {
+        disminuirCantidad(carritoPadre, productoId, talla)
     }
 
 
     return(
         <SCartProdContainer>
-            <SCartProdImage src={"imagen"} alt="" width={0} height={0}/>
+            <SCartProdImage src={ imageSrc ? imageSrc :  defaultImage.src} alt="" width={0} height={0} onClick={handleImageClick}/>
             <SInfoContainer>
-                <SCartName>{"nombre"}</SCartName>
+                <SCartName>{productoNombre}</SCartName>
                 <SModifyContainer>
-                    <SColor id={"color"}/>
-                    <SSize>{"talla"}</SSize>
+                    <SColor id={productoColor}/>
+                    <SSize>{talla?.toLocaleUpperCase()}</SSize>
                     <SQuantity>
-                        <SAdd>+</SAdd>
-                        <SNumber>{"cantidad"}</SNumber>
-                        <SSubtract>-</SSubtract>
+                        <SAdd onClick={handleAñadirCantidad}>+</SAdd>
+                        <SNumber>{cantidad}</SNumber>
+                        <SSubtract onClick={handleDisminuirCantidad}>-</SSubtract>
                     </SQuantity>
                 </SModifyContainer>
                 
                 <SPriceContainer>
-                    <SFinalPrice>{"descuento"}€</SFinalPrice>
-                    <SSaleWithoutDiscount>{"precio"}€</SSaleWithoutDiscount>
+                    <SFinalPrice>{productoPrecioDescuento}€</SFinalPrice>
+                    <SSaleWithoutDiscount>{productoPrecio}€</SSaleWithoutDiscount>
                 </SPriceContainer>
             </SInfoContainer>
             <SIconsContainer>
-                <STrashIcon src={trash} alt="" onClick={() => eliminarElemento(0)}/>
+                <STrashIcon src={trash} alt="" onClick={handleEliminarProdCarrito}/>
             </SIconsContainer>
         </SCartProdContainer>
                                 
@@ -84,7 +112,6 @@ const SCartProdContainer = styled.div`
     justify-content:space-between;
     padding-left: 20px;
     padding-right: 20px;
-
 `
 
 const SInfoContainer = styled.div`
@@ -92,6 +119,7 @@ const SInfoContainer = styled.div`
     flex-direction: column;
     gap: 20px;
     align-items: center;
+    width: 40%;
 `
 
 const SIconsContainer = styled.div`
@@ -100,8 +128,9 @@ const SIconsContainer = styled.div`
     gap: 20px;
 `
 const SCartProdImage = styled(Image)`
-    width: 90px;
+    width: 120px;
     height: 135px;
+    cursor: pointer;
 `
 
 const SCartName = styled.h2`
@@ -113,21 +142,29 @@ const SColor = styled.div`
     border-radius: 100%;
     width: 20px;
     height: 20px;
-    &#rojo{
-        border: 2px solid ${COLORS.black};
-        background-color: red;
+    &#Rojo{
+      border: 2px solid ${COLORS.black};
+      background-color: red;
     }
-    &#azul{
+    &#Azul{
         border: 2px solid ${COLORS.black};
         background-color: blue;
     }
-    &#negro{
+    &#Negro{
         border: 2px solid ${COLORS.gray};
         background-color: black;
     }
-    &#verde{
+    &#Verde{
         border: 2px solid ${COLORS.black};
         background-color: green;
+    }
+    &#Marron{
+        border: 2px solid ${COLORS.black};
+        background-color: brown;
+    }
+    &#Blanco{
+        border: 2px solid ${COLORS.gray};
+        background-color: white;
     }
 `
 
@@ -159,20 +196,24 @@ const STrashIcon = styled(Image)`
 const SQuantity = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 45px;
+    width: 50px;
     
 `
 
-const SAdd = styled.p`
-
+const SAdd = styled.button`
+    border: 0;
+    background-color: ${COLORS.backgroundWhite};
+    cursor: pointer;
 `
 
-const SNumber = styled.p`
+const SNumber = styled.h2`
     
 `
 
-const SSubtract = styled.p`
-
+const SSubtract = styled.h2`
+    cursor: pointer;
+    border: 0;
+    background-color: ${COLORS.backgroundWhite};
 `
 
 const SModifyContainer = styled.div`
@@ -181,7 +222,7 @@ const SModifyContainer = styled.div`
     width: 100%;
 `
 
-const SSize = styled.p`
+const SSize = styled.h2`
     
 `
 
