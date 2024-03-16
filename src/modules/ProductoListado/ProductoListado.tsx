@@ -37,7 +37,11 @@ const ProductoListado: React.FC<ProductoListadoProps> = ({id,imagen,nombre,preci
     const [idFav, setIdFav] = useState(favId)
     
     const handleImageClick = () => {
-        router.push(`/producto/${id}`);
+        if (nombre == "Tarjeta regalo"){
+            router.push(`/tarjetaregalo`);
+        }else{
+            router.push(`/producto/${id}`);
+        }
     };
 
     useEffect(() => {

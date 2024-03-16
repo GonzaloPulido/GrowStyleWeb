@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useEffect, useState } from 'react'
 import AppLayout from '../../layouts/AppLayout/AppLayout'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
@@ -7,9 +7,46 @@ import card from '../../../public/icons/card.png'
 import {Nunito } from "next/font/google"
 export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
 import cart from '../../../public/icons/basketIcon.svg'
+import { fetchAllProductos } from '../../api/utils/productoFunctions'
+import { customToast } from '../../share/notifications'
+import { addToCart } from '../../functions/generalFunctions'
+import useAuthStore from '../../store/loginStore'
+
+interface Producto {
+  id: number;
+  nombre: string;
+  precio: number;
+  precio_descuento: number;
+  color: string;
+  imagen: string;
+  talla_xs: number;
+  talla_s: number;
+  talla_m: number;
+  talla_l: number;
+  talla_xl: number;
+  talla_xxl: number;
+}
 
 const TarjetaRegalo = () => {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [productos, setProductos] = useState<Producto[]>();
+  const [errorAlertShown, setErrorAlertShown] = useState(false)
+  const checkLogged = useAuthStore.getState().isLogged
+  const myUser = useAuthStore.getState().loggedUser
+
+  useEffect(() => {
+    const obtenerProductos = async () => {
+        try {
+            const fetchedProducts = await fetchAllProductos()
+            if (fetchedProducts){
+              setProductos(fetchedProducts)
+            }
+        } catch (error) {
+            console.error('Error al obtener productos:', error);
+        }
+    }
+    obtenerProductos();
+}, []);
 
 
   const handleOptionSelect = (option: string) => {
@@ -19,6 +56,39 @@ const TarjetaRegalo = () => {
       setSelectedOption(option); // Seleccionar la opción si no está seleccionada
     }
   };
+
+
+  const handleCart = () => {
+    if( productos) {
+      if (selectedOption){
+        for (let myProduct of productos) {
+          if (myProduct.nombre == "Tarjeta regalo"){
+            if(selectedOption == "option1" && myProduct.precio == 25){
+              let newSize = 7
+              addToCart(checkLogged, myProduct.id, myUser.id, newSize)
+            }else if(selectedOption == "option2" && myProduct.precio == 50){
+              let newSize = 8
+              addToCart(checkLogged, myProduct.id, myUser.id, newSize)
+            }else if(selectedOption == "option3" && myProduct.precio == 100){
+              let newSize = 9
+              addToCart(checkLogged, myProduct.id, myUser.id, newSize)
+            }
+        }
+        }
+      }else {
+        if (!errorAlertShown) {
+          customToast("Debes seleccionar una opcion", {
+              type: "error",
+              position: "top-left",
+              autoClose: 3000,
+              theme: "colored",
+          });
+          setErrorAlertShown(true);
+        }
+        setErrorAlertShown(false);
+      }
+    }
+  } 
 
 
 
@@ -39,7 +109,7 @@ const TarjetaRegalo = () => {
         </SOptions>
         <SButton>
           <SCartIcon src={cart} alt=''/>
-          <SButtonTitle>Añadir al carrito</SButtonTitle>
+          <SButtonTitle onClick={handleCart}>Añadir al carrito</SButtonTitle>
         </SButton>
       </SRight>
     </SContainer>

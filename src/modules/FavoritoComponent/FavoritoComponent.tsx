@@ -30,7 +30,11 @@ const FavoritoComponent: React.FC<FavoritoComponentProps> = ({id,imagen,nombre,p
     const [imageSrc, setImageSrc] = useState('')
     
     const handleImageClick = () => {
-        router.push(`/producto/${id}`);
+        if (nombre == "Tarjeta regalo"){
+            router.push(`/tarjetaregalo`);
+        }else{
+            router.push(`/producto/${id}`);
+        }
     };
 
     useEffect(() => {
@@ -91,6 +95,7 @@ const SIconsContainer = styled.div`
     gap: 20px;
 `
 const SFavImage = styled(Image)`
+    cursor: pointer;
     width: 120px;
     height: 135px;
 `

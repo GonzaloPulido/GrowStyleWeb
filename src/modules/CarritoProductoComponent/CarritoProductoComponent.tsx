@@ -48,7 +48,12 @@ const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,p
     }, []);
 
     const handleImageClick = () => {
-        router.push(`/producto/${productoId}`);
+        if (productoNombre == "Tarjeta regalo"){
+            router.push(`/tarjetaregalo`);
+        }else{
+            router.push(`/producto/${productoId}`);
+        }
+        
     };
 
     const handleEliminarProdCarrito = () => {
@@ -71,7 +76,7 @@ const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,p
                 <SCartName>{productoNombre}</SCartName>
                 <SModifyContainer>
                     <SColor id={productoColor}/>
-                    <SSize>{talla?.toLocaleUpperCase()}</SSize>
+                    <SSize >{talla?.toLocaleUpperCase()}</SSize>
                     <SQuantity>
                         <SAdd onClick={handleAñadirCantidad}>+</SAdd>
                         <SNumber>{cantidad}</SNumber>
@@ -121,7 +126,7 @@ const SCartProdImage = styled(Image)`
 `
 
 const SCartName = styled.h2`
-    font-size: 25px;
+    font-size: 22px;
 `
 
 const SColor = styled.div`
@@ -152,6 +157,8 @@ const SColor = styled.div`
     &#Blanco{
         border: 2px solid ${COLORS.gray};
         background-color: white;
+    }&#Tarjeta{
+        display: none;
     }
 `
 

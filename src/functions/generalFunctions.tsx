@@ -34,6 +34,12 @@ const mapNumeroTallaATexto = (numeroTalla: number): string | undefined => {
             return 'xl';
         case 6:
             return 'xxl';
+        case 7:
+            return 't1';
+        case 8:
+            return 't2';
+        case 9:
+            return 't3';
         default:
             return undefined;
     }

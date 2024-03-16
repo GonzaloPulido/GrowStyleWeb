@@ -24,7 +24,11 @@ const FavoritoPerfilComponent: React.FC<FavoritoPerfilComponentProps> = ({id,ima
     const [imageSrc, setImageSrc] = useState('')
     
     const handleImageClick = () => {
-        router.push(`/producto/${id}`);
+        if (nombre == "Tarjeta regalo"){
+            router.push(`/tarjetaregalo`);
+        }else{
+            router.push(`/producto/${id}`);
+        }
     };
 
     useEffect(() => {
@@ -145,6 +149,7 @@ const SFav = styled.div`
 `
 
 const SFavImage = styled(Image)`
+    cursor: pointer;
     width: 185px;
     height: 200px;
     @media (max-width: 820px) {
