@@ -57,8 +57,8 @@ const FavoritoComponent: React.FC<FavoritoComponentProps> = ({id,imagen,nombre,p
             <SNameFav>{nombre}</SNameFav>
             <SColor id={color}/>
             <SPriceContainer>
-                <SPrecioDescuento>{precioDescuento}€</SPrecioDescuento>
-                <SPrecio>{precio}€</SPrecio>
+                {precioDescuento > 0 && <SPrecioDescuento>{precioDescuento}€</SPrecioDescuento>}
+                <SPrecio className={ precioDescuento > 0 ? "noprice" : "price"}>{precio}€</SPrecio>
             </SPriceContainer>
         </SInfoContainer>
         <SIconsContainer>
@@ -141,7 +141,13 @@ const SPrecioDescuento = styled.h2`
 `
 const SPrecio = styled.h2`
     font-size: 20px;
-    text-decoration: line-through;
+    &.noprice {
+        text-decoration: line-through;
+        
+    }
+    &.price {
+        margin: auto;
+    }
 `
 
 const STrashIcon = styled(Image)`

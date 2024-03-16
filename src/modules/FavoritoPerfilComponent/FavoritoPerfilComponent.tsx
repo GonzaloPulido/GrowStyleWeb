@@ -54,8 +54,8 @@ const FavoritoPerfilComponent: React.FC<FavoritoPerfilComponentProps> = ({id,ima
                 <STrashIcon src={trash} alt='' onClick={handleEliminarClick}/>
             </SDatoSFav>
             <SPriceContainer>
-                <SPrecioDescuento>{precioDescuento}€</SPrecioDescuento>
-                <SPrecio>{precio}€</SPrecio>
+            {precioDescuento > 0 && <SPrecioDescuento>{precioDescuento}€</SPrecioDescuento>}
+                <SPrecio className={ precioDescuento > 0 ? "noprice" : "price"}>{precio}€</SPrecio>
             </SPriceContainer>
         </SInfoContainer>
     </SFav>
@@ -104,7 +104,12 @@ const SPrecioDescuento = styled.h2`
 `
 const SPrecio = styled.h2`
     font-size: 20px;
-    text-decoration: line-through;
+    &.noprice {
+        text-decoration: line-through;
+    }
+    &.price {
+        margin: auto;
+    }
 `
 
 const SBasketIcon = styled(Image)`

@@ -174,7 +174,8 @@ const SDiscountPrice = styled.h2`
 const SPrice = styled.h2`
     font-size: 25px;
     &.noprice {
-    text-decoration: line-through;
+        text-decoration: line-through;
+        margin: auto;
     }
 `
 

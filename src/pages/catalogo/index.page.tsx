@@ -83,7 +83,7 @@ const Catalogo = () => {
         const favorito: any = favoritos?.find(fav => fav.id_producto === id && fav.id_usuario === myUser.id);
         
         return(
-            <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={precio_descuento} precio={precio} isFav={favorito} favId={favorito ? favorito.id : 0}></ProductoListado>
+            nombre != "Tarjeta regalo" && <ProductoListado key={id} id={id} imagen={imagen} nombre={nombre} precioDescuento={precio_descuento} precio={precio} isFav={favorito} favId={favorito ? favorito.id : 0}></ProductoListado>
         )
       })}
       </SBlock2>

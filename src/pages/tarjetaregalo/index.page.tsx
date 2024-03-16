@@ -9,10 +9,16 @@ export const nunito = Nunito({ subsets: ["latin"], weight: ["600"] })
 import cart from '../../../public/icons/basketIcon.svg'
 
 const TarjetaRegalo = () => {
-  const [option1, setoption1] = useState(false)
-  const [option2, setoption2] = useState(false)
-  const [option3, setoption3] = useState(false)
+  const [selectedOption, setSelectedOption] = useState<string | null>(null);
 
+
+  const handleOptionSelect = (option: string) => {
+    if (selectedOption === option) {
+      setSelectedOption(null); // Deseleccionar la opción si ya está seleccionada
+    } else {
+      setSelectedOption(option); // Seleccionar la opción si no está seleccionada
+    }
+  };
 
 
 
@@ -27,9 +33,9 @@ const TarjetaRegalo = () => {
           Disponible para canjear en línea. Se le enviará un código digital por correo electrónico 
           después de realizar el pedido.</SDescription>
         <SOptions>
-          <SOption onClick={() => (setoption1(true), setoption2(false), setoption3(false))} className={option1  ? "selected" : ""}>25€</SOption>
-          <SOption onClick={() => (setoption2(true), setoption1(false), setoption3(false))} className={option2  ? "selected" : ""}>50€</SOption>
-          <SOption onClick={() => (setoption3(true), setoption1(false), setoption2(false))} className={option3  ? "selected" : ""}>100€</SOption>
+          <SOption className={selectedOption === 'option1' ? 'selected' : ''} onClick={() => handleOptionSelect('option1')}>25€</SOption>
+          <SOption className={selectedOption === 'option2' ? 'selected' : ''} onClick={() => handleOptionSelect('option2')}>50€</SOption>
+          <SOption className={selectedOption === 'option3' ? 'selected' : ''} onClick={() => handleOptionSelect('option3')}>100€</SOption>
         </SOptions>
         <SButton>
           <SCartIcon src={cart} alt=''/>

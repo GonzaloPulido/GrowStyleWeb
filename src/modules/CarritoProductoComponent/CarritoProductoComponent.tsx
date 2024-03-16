@@ -34,7 +34,6 @@ const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,p
     const [imageSrc, setImageSrc] = useState('')
     const myUser = useAuthStore.getState().loggedUser
     const loggedUser = useAuthStore.getState().loggedUser
-    /* const [carrito, setCarrito] = useState<CartItem[]|null>(null) */
 
     useEffect(() => {
         const fetchImage = async () => {
@@ -47,18 +46,6 @@ const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,p
         };
         fetchImage();
     }, []);
-
-    /* useEffect( () => {
-        if(loggedUser && myUser){
-            const callCarrito = localStorage.getItem(`cart_${myUser.id}`);
-            if (callCarrito) {
-                const parsedCarrito: CartItem[] = JSON.parse(callCarrito);
-                setCarrito(parsedCarrito);
-            } else {
-                setCarrito(null);
-            }
-        }
-    }, []) */
 
     const handleImageClick = () => {
         router.push(`/producto/${productoId}`);
@@ -93,8 +80,8 @@ const Carrito: React.FC<CartProps> = ({productoId,productoNombre,productoColor,p
                 </SModifyContainer>
                 
                 <SPriceContainer>
-                    <SFinalPrice>{productoPrecioDescuento}€</SFinalPrice>
-                    <SSaleWithoutDiscount>{productoPrecio}€</SSaleWithoutDiscount>
+                {productoPrecioDescuento > 0 && <SFinalPrice>{productoPrecioDescuento}€</SFinalPrice>}
+                    <SSaleWithoutDiscount className={ productoPrecioDescuento > 0 ? "noprice" : "price"}>{productoPrecio}€</SSaleWithoutDiscount>
                 </SPriceContainer>
             </SInfoContainer>
             <SIconsContainer>
@@ -180,7 +167,14 @@ const SFinalPrice = styled.h2`
 `
 const SSaleWithoutDiscount = styled.h2`
     font-size: 20px;
-    text-decoration: line-through;
+    &.noprice {
+        text-decoration: line-through;
+        
+    }
+    &.price {
+        margin: auto;
+    }
+    
 `
 
 const STrashIcon = styled(Image)`
