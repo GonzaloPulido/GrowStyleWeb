@@ -10,6 +10,7 @@ import useAuthStore from "../../store/loginStore"
 import { fetchProductById } from "../../api/utils/productoFunctions"
 import CarritoProductoComponent from "../CarritoProductoComponent/CarritoProductoComponent"
 import { customToast } from "../../share/notifications"
+import React from "react"
 
 const DynamicPortal = dynamic(
     () => import("../../components/ReactPortal/ReactPortal"),
@@ -151,6 +152,7 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
         }
     };
 
+    
     return(
         <>  
             {isActive && (
@@ -162,30 +164,36 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
                             </SCloseButton>
                             <STitle>Carrito</STitle>
                             <SContainerCart>
-                            {productos?.map((prod)=>{
-                                let myKey = ""
-                                const {producto, cantidad, talla} = prod
-                                if (talla) {
-                                    myKey = producto.id+talla
-                                }else{
-                                    myKey = `${producto.id} `
-                                }
-                                return(
-                                    <CarritoProductoComponent key={myKey}  productoId={producto.id} productoNombre={producto.nombre} productoColor={producto.color}
-                                    productoPrecio={producto.precio} productoPrecioDescuento={producto.precio_descuento} talla={talla}
-                                    cantidad={cantidad} imagen={producto.imagen} onDeleteProdCarrito={handleEliminarProdCarrito} aumentarCantidad={aumentarCantidadProdCarrito}
-                                    disminuirCantidad={disminuirCantidadProdCarrito}
-                                    carritoPadre={carrito}
-                                    ></CarritoProductoComponent>
-                                )
-                            })}
-                            <SFinalPriceContainer>
-                                <STitlePrice>Total: </STitlePrice>
-                                <STitleNumber>{precioTotalCarrito}€</STitleNumber>
-                            </SFinalPriceContainer>
-                            <SBuyButton>
-                                <SButtonTitle>Tramitar pedido</SButtonTitle>
-                            </SBuyButton>
+                            {productos && carrito!.length >0 ? (
+                                
+                                productos?.map((prod)=>{
+                                    let myKey = ""
+                                    const {producto, cantidad, talla} = prod
+                                    if (talla) {
+                                        myKey = producto.id+talla
+                                    }else{
+                                        myKey = `${producto.id} `
+                                    }
+                                    return(
+                                        <CarritoProductoComponent key={myKey}  productoId={producto.id} productoNombre={producto.nombre} productoColor={producto.color}
+                                        productoPrecio={producto.precio} productoPrecioDescuento={producto.precio_descuento} talla={talla}
+                                        cantidad={cantidad} imagen={producto.imagen} onDeleteProdCarrito={handleEliminarProdCarrito} aumentarCantidad={aumentarCantidadProdCarrito}
+                                        disminuirCantidad={disminuirCantidadProdCarrito}
+                                        carritoPadre={carrito}
+                                        ></CarritoProductoComponent>
+                                    )
+                                }) 
+                                
+                            ): (<SEmpty>No tienes productos en favoritos</SEmpty>)}
+                                {!carrito && <React.Fragment>
+                                    <SFinalPriceContainer>
+                                        <STitlePrice>Total: </STitlePrice>
+                                        <STitleNumber>{precioTotalCarrito}€</STitleNumber>
+                                    </SFinalPriceContainer>
+                                    <SBuyButton>
+                                        <SButtonTitle>Tramitar pedido</SButtonTitle>
+                                    </SBuyButton>
+                                </React.Fragment>}                             
                             </SContainerCart>
                         </SPopUpContainer>
                     </SShader>
@@ -404,6 +412,12 @@ const SButtonTitle = styled.h2`
     font-size: 25px;
     width: 100%;
     text-align: center;
+`
+
+const SEmpty = styled.h2`
+    font-size: 25px;
+    text-align: center;
+    margin-top: 200px;
 `
 
 export default Carrito

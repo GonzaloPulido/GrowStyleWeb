@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { COLORS } from '../../share/colors'
 import Image from 'next/image'
@@ -14,145 +14,132 @@ const DynamicPortal = dynamic(
 
 interface FilterProps {
     isActive: boolean,
-    onClose: () => void
+    onClose: () => void,
+    setOrderBy: React.Dispatch<React.SetStateAction<"" | "asc" | "desc">>,
+    setColor: React.Dispatch<React.SetStateAction<"" | "Negro" | "Blanco" | "Rojo" | "Azul" | "Verde" | "Marron">>,
+    setPrice: React.Dispatch<React.SetStateAction<"" | "5-10" | "10-15" | "15-20" | "20-25" | "25-30">>,
 }
 
-const Filtros: React.FC<FilterProps> = ({onClose, isActive}) => {
-    const [orderBy, setOrderBy] = useState(0)
-    const [color, setColor] = useState(0)
-    const [size, setSize] = useState(0)
-    const [price, setPrice] = useState(0)
+const Filtros: React.FC<FilterProps> = ({onClose, isActive,setOrderBy,setColor,setPrice}) => {
+    const [orderBy, setFilterOrderBy] = useState("")
+    const [color, setFilterColor] = useState("")
+    const [price, setFilterPrice] = useState("")
 
-    const selectOrder = (selectedNumber: number) => {
-        if (selectedNumber === 1){
-            if (orderBy === 1){
-                setOrderBy(0)
+    const selectOrder = (selectedOrder: string) => {
+        if (selectedOrder === "asc"){
+            if (orderBy === "asc"){
+                setOrderBy("")
+                setFilterOrderBy("")
             }else{
-                setOrderBy(1)
+                setOrderBy("asc")
+                setFilterOrderBy("asc")
             }
-        } else if (selectedNumber === 2){
-            if (orderBy === 2){
-                setOrderBy(0)
+        } else if (selectedOrder === "desc"){
+            if (orderBy === "desc"){
+                setOrderBy("")
+                setFilterOrderBy("")
             }else{
-                setOrderBy(2)
+                setOrderBy("desc")
+                setFilterOrderBy("desc")
             }
         }
     }
 
-    const selectColor = (selectedColor: number) => {
-        if (selectedColor === 1) {
-            if (color === 1) {
-                setColor(0)
+    const selectColor = (selectedColor: string) => {
+        if (selectedColor === "Negro") {
+            if (color === "Negro") {
+                setColor("")
+                setFilterColor("")
             }else {
-                setColor(1)
+                setColor("Negro")
+                setFilterColor("Negro")
             }
-        } else if (selectedColor === 2) {
-            if (color === 2) {
-                setColor(0)
+        } else if (selectedColor === "Blanco") {
+            if (color === "Blanco") {
+                setColor("")
+                setFilterColor("")
             }else {
-                setColor(2)
+                setColor("Blanco")
+                setFilterColor("Blanco")
             }
-        }else if (selectedColor === 3) {
-            if (color === 3) {
-                setColor(0)
+        }else if (selectedColor === "Rojo") {
+            if (color === "Rojo") {
+                setColor("")
+                setFilterColor("")
             }else {
-                setColor(3)
+                setColor("Rojo")
+                setFilterColor("Rojo")
             }
-        }else if (selectedColor === 4) {
-            if (color === 4) {
-                setColor(0)
+        }else if (selectedColor === "Azul") {
+            if (color === "Azul") {
+                setColor("")
+                setFilterColor("")
             }else {
-                setColor(4)
+                setColor("Azul")
+                setFilterColor("Azul")
             }
-        }else if (selectedColor === 5) {
-            if (color === 5) {
-                setColor(0)
+        }else if (selectedColor === "Verde") {
+            if (color === "Verde") {
+                setColor("")
+                setFilterColor("")
             }else {
-                setColor(5)
+                setColor("Verde")
+                setFilterColor("Verde")
             }
-        }else if (selectedColor === 6) {
-            if (color === 6) {
-                setColor(0)
+        }else if (selectedColor === "Marron") {
+            if (color === "Marron") {
+                setColor("")
+                setFilterColor("")
             }else {
-                setColor(6)
-            }
-        }
-    }
-
-    const selectSize = (selectedSize: number) => {
-        if (selectedSize === 1) {
-            if (size === 1) {
-                setSize(0)
-            }else {
-                setSize(1)
-            }
-        } else if (selectedSize === 2) {
-            if (size === 2) {
-                setSize(0)
-            }else {
-                setSize(2)
-            }
-        }else if (selectedSize === 3) {
-            if (size === 3) {
-                setSize(0)
-            }else {
-                setSize(3)
-            }
-        }else if (selectedSize === 4) {
-            if (size === 4) {
-                setSize(0)
-            }else {
-                setSize(4)
-            }
-        }else if (selectedSize === 5) {
-            if (size === 5) {
-                setSize(0)
-            }else {
-                setSize(5)
-            }
-        }else if (selectedSize === 6) {
-            if (size === 6) {
-                setSize(0)
-            }else {
-                setSize(6)
+                setColor("Marron")
+                setFilterColor("Marron")
             }
         }
     }
 
-    const selectPrice = (selectedPrice: number) => {
-        if (selectedPrice === 1) {
-            if (price === 1) {
-                setPrice(0)
+    const selectPrice = (selectedPrice: string) => {
+        if (selectedPrice === "5-10") {
+            if (price === "5-10") {
+                setPrice("")
+                setFilterPrice("")
             }else {
-                setPrice(1)
+                setPrice("5-10")
+                setFilterPrice("5-10")
             }
-        } else if (selectedPrice === 2) {
-            if (price === 2) {
-                setPrice(0)
+        } else if (selectedPrice === "10-15") {
+            if (price === "10-15") {
+                setPrice("")
+                setFilterPrice("")
             }else {
-                setPrice(2)
+                setPrice("10-15")
+                setFilterPrice("10-15")
             }
-        }else if (selectedPrice === 3) {
-            if (price === 3) {
-                setPrice(0)
+        }else if (selectedPrice === "15-20") {
+            if (price === "15-20") {
+                setPrice("")
+                setFilterPrice("")
             }else {
-                setPrice(3)
+                setPrice("15-20")
+                setFilterPrice("15-20")
             }
-        }else if (selectedPrice === 4) {
-            if (price === 4) {
-                setPrice(0)
+        }else if (selectedPrice === "20-25") {
+            if (price === "20-25") {
+                setPrice("")
+                setFilterPrice("")
             }else {
-                setPrice(4)
+                setPrice("20-25")
+                setFilterPrice("20-25")
             }
-        }else if (selectedPrice === 5) {
-            if (price === 5) {
-                setPrice(0)
+        }else if (selectedPrice === "25-30") {
+            if (price === "25-30") {
+                setPrice("")
+                setFilterPrice("")
             }else {
-                setPrice(5)
+                setPrice("25-30")
+                setFilterPrice("25-30")
             }
         }
     }
-
 
   return(
         <>  
@@ -168,40 +155,29 @@ const Filtros: React.FC<FilterProps> = ({onClose, isActive}) => {
                                 <SOrderBy>
                                     <SFilterTitle>Ordenar por</SFilterTitle>
                                     <SOptions>
-                                        <SOption onClick={() => selectOrder(1)} className={orderBy == 1 ? "selected" : ""}>Precio ascendente</SOption>
-                                        <SOption onClick={() => selectOrder(2)} className={orderBy == 2 ? "selected" : ""}>Precio descendente</SOption>
+                                        <SOption onClick={() => {selectOrder("asc")}} className={orderBy == "asc" ? "selected" : ""}>Precio ascendente</SOption>
+                                        <SOption onClick={() => {selectOrder("desc")}} className={orderBy == "desc" ? "selected" : ""}>Precio descendente</SOption>
                                     </SOptions>
                                 </SOrderBy>
                                 <SColor>
                                     <SFilterTitle>Color</SFilterTitle>
                                     <SColorSelector>
-                                        <SSingleColor id="negro" onClick={() => selectColor(1)} className={color == 1 ? "selected" : ""}></SSingleColor>
-                                        <SSingleColor id="blanco" onClick={() => selectColor(2)} className={color == 2 ? "selected" : ""}></SSingleColor>
-                                        <SSingleColor id="rojo" onClick={() => selectColor(3)} className={color == 3 ? "selected" : ""}></SSingleColor>
-                                        <SSingleColor id="azul" onClick={() => selectColor(4)} className={color == 4 ? "selected" : ""}></SSingleColor>
-                                        <SSingleColor id="verde" onClick={() => selectColor(5)} className={color == 5 ? "selected" : ""}></SSingleColor>
-                                        <SSingleColor id="marron" onClick={() => selectColor(6)} className={color == 6 ? "selected" : ""}></SSingleColor>
+                                        <SSingleColor id="negro" onClick={() => selectColor("Negro")} className={color == "Negro" ? "selected" : ""}></SSingleColor>
+                                        <SSingleColor id="blanco" onClick={() => selectColor("Blanco")} className={color == "Blanco" ? "selected" : ""}></SSingleColor>
+                                        <SSingleColor id="rojo" onClick={() => selectColor("Rojo")} className={color == "Rojo" ? "selected" : ""}></SSingleColor>
+                                        <SSingleColor id="azul" onClick={() => selectColor("Azul")} className={color == "Azul" ? "selected" : ""}></SSingleColor>
+                                        <SSingleColor id="verde" onClick={() => selectColor("Verde")} className={color == "Verde" ? "selected" : ""}></SSingleColor>
+                                        <SSingleColor id="marron" onClick={() => selectColor("Marron")} className={color == "Marron" ? "selected" : ""}></SSingleColor>
                                     </SColorSelector>
                                 </SColor>
-                                <SSize>
-                                    <SFilterTitle>Talla</SFilterTitle>
-                                    <SSizeSelector>
-                                        <SSizeOption onClick={() => selectSize(1)} className={size == 1 ? "selected" : ""}>XS</SSizeOption>
-                                        <SSizeOption onClick={() => selectSize(2)} className={size == 2 ? "selected" : ""}>S</SSizeOption>
-                                        <SSizeOption onClick={() => selectSize(3)} className={size == 3 ? "selected" : ""}>M</SSizeOption>
-                                        <SSizeOption onClick={() => selectSize(4)} className={size == 4 ? "selected" : ""}>L</SSizeOption>
-                                        <SSizeOption onClick={() => selectSize(5)} className={size == 5 ? "selected" : ""}>XL</SSizeOption>
-                                        <SSizeOption onClick={() => selectSize(6)} className={size == 6 ? "selected" : ""}>XXL</SSizeOption>
-                                    </SSizeSelector>
-                                </SSize>
                                 <SPrice>
                                     <SFilterTitle>Precio</SFilterTitle>
                                     <SOptions>
-                                        <SPriceOption onClick={() => selectPrice(1)} className={price == 1 ? "selected" : ""}>5€ - 10€</SPriceOption>
-                                        <SPriceOption onClick={() => selectPrice(2)} className={price == 2 ? "selected" : ""}>10€ - 15€</SPriceOption>
-                                        <SPriceOption onClick={() => selectPrice(3)} className={price == 3 ? "selected" : ""}>15€ - 20€</SPriceOption>
-                                        <SPriceOption onClick={() => selectPrice(4)} className={price == 4 ? "selected" : ""}>20€ - 25€</SPriceOption>
-                                        <SPriceOption onClick={() => selectPrice(5)} className={price == 5 ? "selected" : ""}>25€ - 30€</SPriceOption>
+                                        <SPriceOption onClick={() => selectPrice("5-10")} className={price == "5-10" ? "selected" : ""}>5€ - 10€</SPriceOption>
+                                        <SPriceOption onClick={() => selectPrice("10-15")} className={price == "10-15" ? "selected" : ""}>10€ - 15€</SPriceOption>
+                                        <SPriceOption onClick={() => selectPrice("15-20")} className={price == "15-20" ? "selected" : ""}>15€ - 20€</SPriceOption>
+                                        <SPriceOption onClick={() => selectPrice("20-25")} className={price == "20-25" ? "selected" : ""}>20€ - 25€</SPriceOption>
+                                        <SPriceOption onClick={() => selectPrice("25-30")} className={price == "25-30" ? "selected" : ""}>25€ - 30€</SPriceOption>
                                     </SOptions>
                                 </SPrice>
                             </SFilters>
@@ -228,7 +204,7 @@ const SShader = styled.div`
 
 const SPopUpContainer = styled.div`
     width: 30.5rem;
-    height: 37rem;
+    height: 34rem;
     background-color: ${COLORS.backgroundWhite};
     border-bottom-left-radius: 0.375rem;
     overflow: hidden;

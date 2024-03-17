@@ -116,7 +116,7 @@ const Favoritos: React.FC<FavProps> = ({onClose, isActive}) => {
           fetchFavoritos();
         }
       }, []);
-
+      
     return(
         <>  
             {isActive && (
@@ -128,11 +128,10 @@ const Favoritos: React.FC<FavProps> = ({onClose, isActive}) => {
                             </SCloseButton>
                             <STitle>Favoritos</STitle>
                             <SContainerFavorites>
-                            {productos ? (
+                            {productos && favoritos ? (
                                 productos.map( (prod) => {
                                     const {id, nombre, color, imagen, precio, precio_descuento} = prod
                                     const favorito: any = favoritos?.find(fav => fav.id_producto === id && fav.id_usuario === myUser.id);
-                                    //console.log("A ver favorito",favorito.id);
 
                                     return(
                                         <FavoritoComponent key={id} id={id} imagen={imagen} nombre={nombre} 
@@ -143,13 +142,12 @@ const Favoritos: React.FC<FavProps> = ({onClose, isActive}) => {
                                     )
                                 })
                             ) : (
-                                ""
+                                <SEmpty>No tienes productos en favoritos</SEmpty>
                             )}
                             </SContainerFavorites>
                         </SPopUpContainer>
                     </SShader>
                 </DynamicPortal>
-                
             )}
         </>
     )
@@ -216,92 +214,16 @@ const SContainerFavorites = styled.div`
     width: 100%;
 `
 
-const SFavContainer = styled.div`
-    display: flex;
-    width: 100%;
-    justify-content:space-between;
-    padding-left: 20px;
-    padding-right: 20px;
-
-`
-
-const SInfoContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    align-items: center;
-`
-
-const SIconsContainer = styled.div`
-    display: flex;
-    align-items: center;
-    gap: 20px;
-`
-const SFavImage = styled(Image)`
-    width: 90px;
-    height: 135px;
-`
-
-const SNameFav = styled.h2`
+const SEmpty = styled.h2`
     font-size: 25px;
+    text-align: center;
+    margin-top: 200px;
 `
 
-const SColor = styled.div`
-    padding: 5px;
-    width: 100%;
-    height: 20px;
-    &#rojo{
-        border: 2px solid ${COLORS.black};
-        background-color: red;
-    }
-    &#azul{
-        border: 2px solid ${COLORS.black};
-        background-color: blue;
-    }
-    &#negro{
-        border: 2px solid ${COLORS.gray};
-        background-color: black;
-    }
-    &#verde{
-        border: 2px solid ${COLORS.black};
-        background-color: green;
-    }
-`
 
-const SPriceContainer = styled.div`
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-`
 
-const SFinalPrice = styled.h2`
-    font-size: 20px;
-    color: red;
-`
-const SSaleWithoutDiscount = styled.h2`
-    font-size: 20px;
-    text-decoration: line-through;
-`
 
-const SBasketIcon = styled(Image)`
-    width: 2rem;
-    height: 2rem;
-    cursor: pointer;
-    &:hover{
-        transition: filter 0.2s ease-in-out;
-        filter: invert(35%) sepia(43%) saturate(450%) hue-rotate(66deg) brightness(101%) contrast(94%);
-    }
-`
 
-const STrashIcon = styled(Image)`
-    width: 2rem;
-    height: 2rem;
-    cursor: pointer;
-    &:hover{
-        transition: filter 0.2s ease-in-out;
-        filter: invert(35%) sepia(43%) saturate(450%) hue-rotate(66deg) brightness(101%) contrast(94%);
-    }
-`
 
 
 export default Favoritos

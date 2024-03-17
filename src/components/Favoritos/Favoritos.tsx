@@ -113,8 +113,6 @@ const Favoritos = () => {
             productos.map( (prod) => {
                 const {id, nombre, color, imagen, precio, precio_descuento} = prod
                 const favorito: any = favoritos?.find(fav => fav.id_producto === id && fav.id_usuario === myUser.id);
-                //console.log("A ver favorito",favorito.id);
-
                 return(
                     <FavoritoPerfilComponent key={id} id={id} imagen={imagen} nombre={nombre} 
                     precioDescuento={precio_descuento} precio={precio} color={color}

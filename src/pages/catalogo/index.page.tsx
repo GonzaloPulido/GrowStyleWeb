@@ -31,13 +31,72 @@ interface Favorito {
   id_producto: number;
 }
 
+interface FiltrosComp {
+  orderBy: ""|"asc"|"desc",
+  color: ""|"Negro"|"Blanco"|"Rojo"|"Azul"|"Verde"|"Marron",
+  precio: ""|"5-10"|"10-15"|"15-20"|"20-25"|"25-30",
+}
+
 const Catalogo = () => {
   const [filters, setFilters] = useState(false)
   const [productos, setProductos] = useState<Producto[]>([]);
   const [favoritos, setFavoritos] = useState<Favorito[]>()
   const myUser = useAuthStore.getState().loggedUser
   const checkLogged = useAuthStore.getState().isLogged
+  const [orderBy, setOrderBy] = useState<FiltrosComp["orderBy"]>("")
+  const [color, setColor] = useState<FiltrosComp["color"]>("")
+  const [price, setPrice] = useState<FiltrosComp["precio"]>("")
+  const [filteredList, setFilteredList] = useState<Producto[]>()
+
+  /* const applyFilters = () => {
+    console.log(orderBy);
+    if (orderBy == "asc") {
+      if (color != "" || price != "") {
+        setFilteredList(filteredList?.sort((a,b) => a.precio - b.precio))
+      }else{
+        setFilteredList(productos?.sort((a,b) => a.precio - b.precio))
+        console.log(filteredList);
+      }
+    }else if (orderBy == "desc") {
+      if (color != "" || price != "") {
+        setFilteredList(filteredList?.sort((a,b) => b.precio - a.precio))
+      }else{
+        setFilteredList(productos?.sort((a,b) => b.precio - a.precio))
+        console.log(filteredList);
+      }
+    }
+  } */
+
+  useEffect(() => {
+  const applyFilters = () => {
+    let filteredData = [...productos]; // Copia los productos originales para no modificarlos directamente
+    if (orderBy === "asc") {
+      filteredData.sort((a, b) => a.precio - b.precio);
+    } else if (orderBy === "desc") {
+      filteredData.sort((a, b) => b.precio - a.precio);
+    }
+    if (color !== "") {
+      filteredData = filteredData.filter(prod => prod.color === color);
+    }
+    if (price !== "") {
+      const [minPrice, maxPrice] = price.split('-').map(Number);
+      filteredData = filteredData.filter(prod => prod.precio >= minPrice && prod.precio <= maxPrice);
+    }
+    setFilteredList(filteredData);
+  };
+
+  applyFilters();
+}, [orderBy, color, price, productos]);
+
+  /* useEffect(() => {
+    if (orderBy != "" || color != "" || price != "") {
+      applyFilters()
+    }
+  }, [orderBy,color,price]) */
   
+
+
+
   useEffect(() => {
     if (checkLogged) {
         const fetchFavoritos = async () => {
@@ -59,6 +118,7 @@ const Catalogo = () => {
         const data = await fetchAllProductos();
         if (data && Array.isArray(data)) {
           setProductos(data);
+          setFilteredList(data);
         } else {
           console.error('Error: Datos de productos no válidos.');
         }
@@ -72,13 +132,13 @@ const Catalogo = () => {
   
   return (
     <SContainer>
-      {(filters) && (<Filtros isActive={filters} onClose={() => setFilters(false)}/>)}
+      {(filters) && (<Filtros isActive={filters} onClose={() => setFilters(false)} setOrderBy={setOrderBy} setColor={setColor} setPrice={setPrice}/>)}
       <SBlock1 onClick={() => setFilters(true)}>
         <SFilterImage src={filter} alt=''/>
         <SFilterTitle >Filtros</SFilterTitle>
       </SBlock1>
       <SBlock2>
-      {productos.map( (prod)=>{
+      {filteredList?.map( (prod)=>{
         const { id, nombre, precio, precio_descuento, imagen  } = prod;
         const favorito: any = favoritos?.find(fav => fav.id_producto === id && fav.id_usuario === myUser.id);
         

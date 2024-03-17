@@ -19,12 +19,13 @@ import useAuthStore from '../../store/loginStore'
 const Header = () => {
   const [menu, setMenu] = useState(false)
   const [check, setCheck] = useState<Boolean>()
-  const checkLogin = useAuthStore.getState().isLogged;
+  const isLogged = useAuthStore.getState().isLogged;
   const [login, setLogin] = useState(false)
   const [favoritos, setFavoritos] = useState(false)
   const [carrito, setCarrito] = useState(false)
   const [profile, setProfile] = useState(false)
   const [logged, setLogged] = useState(false)
+  const [checkLogin, setCheckLogin] = useState(false)
 
   const selectProfileIcon = () => { // Esta funcion comprueba si el usuario esta logueado o si no lo esta, y decide...
     if (logged) {
@@ -35,19 +36,20 @@ const Header = () => {
   }
 
   useEffect(() => {
-    const checkLogin = useAuthStore.getState().isLogged;
-
-  }, [])
+    if (typeof window != undefined) {
+      setCheckLogin(useAuthStore.getState().isLogged)
+    }
+  }, [isLogged])
   
 
   return (
     <SHeader>
       <SSidebarIcon src={barsIcon} alt='' onClick={() => setMenu(true)}/>
       <SLogoGrowStyle src={logoGrow.src} alt='' width="0" height="0" onClick={() => router.push("/")}/>
-      <SRightContainer className={!checkLogin? "end" : ""}>
-        <SProfileIcon src={profileIcon} alt='' /* onClick={() => selectProfileIcon()} */ onClick={!checkLogin ? () => selectProfileIcon() : () => router.push('/perfil')} />
-        <SFavorites src={favIcon} alt=''onClick={() => setFavoritos(true)} /* className={checkLogin? "" : "end"} *//>
-        <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)} /* className={checkLogin? "" : "end"} *//>
+      <SRightContainer className={!checkLogin ? "notlogged": ""}>
+        <SProfileIcon src={profileIcon} alt=''  onClick={!checkLogin ? () => selectProfileIcon() : () => router.push('/perfil')} />
+        {checkLogin && <SFavorites src={favIcon} alt='' onClick={() => setFavoritos(true)} />}
+        {checkLogin && <SCartIcon src={cartIcon} alt='' onClick={() => setCarrito(true)} />}
       </SRightContainer>
       {(menu) && (<Menu isActive={menu} onClose={() => setMenu(false)}/>)}
       {(login) && (<Login isActive={login} onClose={() => setLogin(false)}/>)}
@@ -92,12 +94,11 @@ const SRightContainer = styled.div`
   margin-right: 1.25rem;
   width: 7.5rem;
   display: flex;
-  justify-content:space-between;
+  justify-content: space-between;
   gap: 0.013rem;
-  &.end{
+  &.notlogged{
     justify-content: flex-end;
   }
-  
 `
 
 const SProfileIcon = styled(Image)`
@@ -119,10 +120,8 @@ const SCartIcon = styled(Image)`
   width: 1.875rem;
   height: 1.875rem;
   cursor: pointer;
-  &.end{
-    display: none;
-  }
 `
+
 
 
 export default Header
