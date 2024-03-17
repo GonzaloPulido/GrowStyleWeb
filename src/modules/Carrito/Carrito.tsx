@@ -164,7 +164,7 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
                             </SCloseButton>
                             <STitle>Carrito</STitle>
                             <SContainerCart>
-                            {productos && carrito!.length >0 ? (
+                            {productos && carrito!.length > 0 ? (
                                 
                                 productos?.map((prod)=>{
                                     let myKey = ""
@@ -185,7 +185,7 @@ const Carrito: React.FC<CartProps> = ({onClose, isActive}) => {
                                 }) 
                                 
                             ): (<SEmpty>No tienes productos en favoritos</SEmpty>)}
-                                {!carrito && <React.Fragment>
+                                {carrito && <React.Fragment>
                                     <SFinalPriceContainer>
                                         <STitlePrice>Total: </STitlePrice>
                                         <STitleNumber>{precioTotalCarrito}€</STitleNumber>
