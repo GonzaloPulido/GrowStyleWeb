@@ -14,6 +14,16 @@ export const getAllImages = async () => {
 
 export const getImageById = async (id: string) => {
   try {
+    const response = await fetch(`${BASE_URL}/images/${id}`,{ cache: 'force-cache' });
+    return response.json();
+  } catch (error) {
+    console.error(`Error al obtener la imagen con ID ${id}:`, error);
+    throw error;
+  }
+};
+
+export const getImageById2 = async (id: string) => {
+  try {
     const response = await axios.get(`${BASE_URL}/images/${id}`);
     return response.data;
   } catch (error) {
