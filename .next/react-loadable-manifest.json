@@ -11,6 +11,12 @@
       "static/chunks/src_components_ReactPortal_ReactPortal_tsx.js"
     ]
   },
+  "modules/Filtros/Filtros.tsx -> ../../components/ReactPortal/ReactPortal": {
+    "id": "modules/Filtros/Filtros.tsx -> ../../components/ReactPortal/ReactPortal",
+    "files": [
+      "static/chunks/src_components_ReactPortal_ReactPortal_tsx.js"
+    ]
+  },
   "modules/Login/Login.tsx -> ../../components/ReactPortal/ReactPortal": {
     "id": "modules/Login/Login.tsx -> ../../components/ReactPortal/ReactPortal",
     "files": [
@@ -19,6 +25,12 @@
   },
   "modules/Menu/Menu.tsx -> ../../components/ReactPortal/ReactPortal": {
     "id": "modules/Menu/Menu.tsx -> ../../components/ReactPortal/ReactPortal",
+    "files": [
+      "static/chunks/src_components_ReactPortal_ReactPortal_tsx.js"
+    ]
+  },
+  "modules/PopUp/Delete.tsx -> ../../components/ReactPortal/ReactPortal": {
+    "id": "modules/PopUp/Delete.tsx -> ../../components/ReactPortal/ReactPortal",
     "files": [
       "static/chunks/src_components_ReactPortal_ReactPortal_tsx.js"
     ]
