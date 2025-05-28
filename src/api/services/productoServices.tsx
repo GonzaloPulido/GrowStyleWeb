@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
 
-// URL de tu backend
-const API_URL = 'http://localhost:3001'; // Asegúrate de ajustar la URL según tu configuración
 
+// const API_URL = 'http://localhost:3001'; (DESPLIEGUE LOCAL)
+const API_URL = 'https://growstylebackend-production.up.railway.app';
 // Interfaz para el producto
 interface Product {
   id: number;

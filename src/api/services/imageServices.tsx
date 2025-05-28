@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:3001'; // Actualiza la URL base según tu configuración
-
+// const BASE_URL = 'http://localhost:3001'; (DESPLIEGUE LOCAL)
+const BASE_URL = 'https://growstylebackend-production.up.railway.app';
 export const getAllImages = async () => {
   try {
     const response = await axios.get(`${BASE_URL}/images`);

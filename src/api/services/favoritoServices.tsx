@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 
-const API_URL = 'http://localhost:3001';
+//const API_URL = 'http://localhost:3001';  (DESPLIEGUE LOCAL)
+const API_URL = 'https://growstylebackend-production.up.railway.app'
 
 interface Favorito {
   id: number;
