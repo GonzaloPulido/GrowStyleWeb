@@ -18,8 +18,13 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
+    "incremental": true,
     "jsx": "preserve",
-    "incremental": true
+    "types": [
+      "next",
+      "react",
+      "react-dom"
+    ]
   },
   "include": [
     "src",

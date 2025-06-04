@@ -13,7 +13,7 @@
     "axios": "^1.5.1",
     "commander": "^14.0.0",
     "js-cookie": "^3.0.5",
-    "next": "^14.2.29",
+    "next": "^15.3.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.47.0",
@@ -27,8 +27,8 @@
   },
   "devDependencies": {
     "@types/node": "latest",
-    "@types/react": "latest",
-    "@types/react-dom": "latest",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.5",
     "@types/styled-components": "5.1.26",
     "eslint": "8.48.0",
     "eslint-config-next": "13.4.19",
@@ -36,8 +36,5 @@
     "prettier": "2.8.4",
     "styled-components": "5.3.8",
     "typescript": "5.2.2"
-  },
-  "engines": {
-  "node": "20.x"
   }
 }
