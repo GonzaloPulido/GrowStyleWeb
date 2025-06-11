@@ -32,7 +32,7 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
       <link rel="icon" href={growStyleIcon.src} type="image/png" />
     </Head>
     {getLayout(<Component {...pageProps}/>)}
-    <SToastContainer closeButton={ToastCloseButton} />
+    <SToastContainer closeButton={ToastCloseButton} autoClose={3000}/>
     <GlobalStyle/>
     </>
   )
